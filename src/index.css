@@ -3,9 +3,7 @@
 @tailwind utilities;
 
 @layer components {
-  .btn {
-    @apply rounded-none;
-  }
+
 
   .input-floating {
     @apply input h-10 px-0 placeholder-transparent;
