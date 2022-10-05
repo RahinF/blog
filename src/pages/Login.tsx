@@ -18,7 +18,7 @@ const Login = () => {
   };
 
   return (
-    <div className="grid min-h-screen place-items-center bg-blue-300 p-4">
+    <main className="grid min-h-screen place-items-center bg-blue-300 p-4">
       <div className="flex w-full max-w-md flex-col items-center rounded bg-white py-10 px-4">
         <h1 className="mb-6 text-3xl font-bold">Login</h1>
 
@@ -32,7 +32,7 @@ const Login = () => {
           className="m-auto my-6 flex w-full max-w-sm flex-col gap-4"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <section className="flex flex-col">
+          <div className="flex flex-col">
             <label htmlFor="email" className="label">
               <span>
                 Email{" "}
@@ -58,9 +58,9 @@ const Login = () => {
                 {errors.email.message}
               </p>
             )}
-          </section>
+          </div>
 
-          <section className="flex flex-col">
+          <div className="flex flex-col">
             <label htmlFor="password" className="label">
               <span>
                 Password{" "}
@@ -102,7 +102,7 @@ const Login = () => {
                 {errors.password.message}
               </p>
             )}
-          </section>
+          </div>
 
           <div aria-hidden>
             Fields marked with <span className="text-red-600">*</span> are
@@ -119,7 +119,7 @@ const Login = () => {
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

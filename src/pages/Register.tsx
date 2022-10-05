@@ -21,7 +21,7 @@ const Register = () => {
   };
 
   return (
-    <div className="grid min-h-screen place-items-center bg-blue-300 p-4">
+    <main className="grid min-h-screen place-items-center bg-blue-300 p-4">
       <div className="flex w-full max-w-md flex-col items-center rounded bg-white py-10 px-4">
         <h1 className="mb-6 text-3xl font-bold">Register</h1>
 
@@ -35,7 +35,7 @@ const Register = () => {
           className="m-auto my-6 flex w-full max-w-sm flex-col gap-4"
           onSubmit={handleSubmit(onSubmit)}
         >
-          <section className="flex flex-col">
+          <div className="flex flex-col">
             <label htmlFor="username" className="label">
               <span>
                 Username{" "}
@@ -66,9 +66,9 @@ const Register = () => {
                 {errors.username.message}
               </p>
             )}
-          </section>
+          </div>
 
-          <section className="flex flex-col">
+          <div className="flex flex-col">
             <label htmlFor="email" className="label">
               <span>
                 Email{" "}
@@ -94,9 +94,9 @@ const Register = () => {
                 {errors.email.message}
               </p>
             )}
-          </section>
+          </div>
 
-          <section className="flex flex-col">
+          <div className="flex flex-col">
             <label htmlFor="password" className="label">
               <span>
                 Password{" "}
@@ -143,7 +143,7 @@ const Register = () => {
                 {errors.password.message}
               </p>
             )}
-          </section>
+          </div>
 
           <div aria-hidden>
             Fields marked with <span className="text-red-600">*</span> are
@@ -159,7 +159,7 @@ const Register = () => {
           </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 
