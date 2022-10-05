@@ -26,7 +26,7 @@ const Register = () => {
         <h1 className="mb-6 text-3xl font-bold">Register</h1>
 
         {error && (
-          <span className="text-red-500" role="alert">
+          <span className="text-red-600" role="alert">
             Something went wrong...
           </span>
         )}
