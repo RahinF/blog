@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { Warning } from "phosphor-react";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -19,11 +20,11 @@ const Login = () => {
 
   return (
     <main className="grid min-h-screen place-items-center p-4">
-      <div className="flex w-full max-w-md flex-col items-center rounded border py-10 px-4">
+      <div className="flex w-full max-w-md flex-col items-center border py-10 px-4">
         <h1 className="mb-6 text-3xl font-bold">Login</h1>
 
         {error && (
-          <span className="text-red-600" role="alert">
+          <span className="text-error" role="alert">
             Something went wrong...
           </span>
         )}
@@ -36,7 +37,7 @@ const Login = () => {
             <label htmlFor="email" className="label">
               <span>
                 Email{" "}
-                <span aria-hidden className="text-red-600">
+                <span aria-hidden className="text-error">
                   *
                 </span>
               </span>
@@ -45,8 +46,7 @@ const Login = () => {
               id="email"
               type="email"
               className={clsx({
-                "input input-bordered": true,
-                "input-error": errors.email,
+                "border-error": errors.email,
               })}
               aria-required
               aria-invalid={errors.email ? "true" : "false"}
@@ -54,17 +54,20 @@ const Login = () => {
             />
 
             {errors.email && (
-              <p role="alert" className="mt-2 text-sm text-red-600">
-                {errors.email.message}
-              </p>
+              <span
+                role="alert"
+                className="mt-2 flex items-center gap-2 text-sm text-error"
+              >
+                <Warning size={16} weight="fill" /> {errors.email.message}
+              </span>
             )}
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="password" className="label">
+            <label htmlFor="password" className="label flex justify-between">
               <span>
                 Password{" "}
-                <span aria-hidden className="text-red-600">
+                <span aria-hidden className="text-error">
                   *
                 </span>
               </span>
@@ -87,8 +90,7 @@ const Login = () => {
               id="password"
               type={isPasswordVisible ? "text" : "password"}
               className={clsx({
-                "input input-bordered": true,
-                "input-error": errors.password,
+                "border-error": errors.password,
               })}
               aria-required
               aria-invalid={errors.password ? "true" : "false"}
@@ -98,14 +100,17 @@ const Login = () => {
             />
 
             {errors.password && (
-              <p role="alert" className="mt-2 text-sm text-red-600">
-                {errors.password.message}
+              <p
+                role="alert"
+                className="mt-2 flex items-center gap-2 text-sm text-error"
+              >
+                <Warning size={16} weight="fill" /> {errors.password.message}
               </p>
             )}
           </div>
 
           <div aria-hidden>
-            Fields marked with <span className="text-red-600">*</span> are
+            Fields marked with <span className="text-error">*</span> are
             required.
           </div>
 
@@ -114,7 +119,7 @@ const Login = () => {
 
         <div>
           Don't have an account?{" "}
-          <Link to="/register" className="font-semibold text-blue-600">
+          <Link to="/register" className="font-semibold text-info">
             Register
           </Link>
         </div>

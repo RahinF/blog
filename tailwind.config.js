@@ -4,7 +4,19 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {},
+
+    fontFamily: {
+      'sans': ['Montserrat', 'sans-serif']
+    },
+    extend: {
+      colors: {
+        "error": "#dc2626",
+        "info": "#2563eb"
+      },
+    },
   },
-  plugins: [require("daisyui")],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/line-clamp'),
+  ],
 }

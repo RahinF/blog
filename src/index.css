@@ -1,22 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer components {
-
-
-  .input-floating {
-    @apply input h-10 px-0 placeholder-transparent;
-    @apply rounded-none border-b-2 border-t-0 border-l-0 border-r-0 border-gray-300;
-    @apply transition-colors duration-300;
-    @apply focus:border-primary focus:outline-none;
+  .label {
+    @apply py-2;
   }
 
-  .label-floating {
-    @apply label;
-    @apply absolute -left-1 -top-6;
-    @apply text-sm text-gray-600 transition-all;
-    @apply peer-placeholder-shown:top-0 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 peer-placeholder-shown:cursor-text;
-    @apply peer-focus:-top-6 peer-focus:text-sm peer-focus:text-gray-600 peer-focus:cursor-default;
+  .btn {
+    @apply h-12 py-2 uppercase font-medium;
+    @apply text-white bg-gray-800 hover:bg-gray-900;
   }
+
+  .btn-primary {
+    @apply bg-red-300 border-red-300 hover:bg-red-500 text-white
+  }
+
+
+
+
 }
