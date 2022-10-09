@@ -49,7 +49,8 @@ const Register = () => {
               id="username"
               type="text"
               className={clsx({
-                "border-error": errors.username,
+                "border-error focus:border-error focus:ring-error":
+                  errors.username,
               })}
               aria-required
               aria-invalid={errors.username ? "true" : "false"}
@@ -84,7 +85,8 @@ const Register = () => {
               id="email"
               type="email"
               className={clsx({
-                "border-error": errors.email,
+                "border-error focus:border-error focus:ring-error":
+                  errors.email,
               })}
               aria-required
               aria-invalid={errors.email ? "true" : "false"}
@@ -128,7 +130,8 @@ const Register = () => {
               id="password"
               type={isPasswordVisible ? "text" : "password"}
               className={clsx({
-                "border-error": errors.password,
+                "border-error focus:border-error focus:ring-error":
+                  errors.password,
               })}
               aria-required
               aria-invalid={errors.password ? "true" : "false"}
