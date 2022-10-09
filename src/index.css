@@ -10,7 +10,7 @@
   }
 
   .btn {
-    @apply h-12 py-2 uppercase font-medium;
+    @apply h-12 py-2 uppercase font-medium px-4;
     @apply text-white bg-gray-800 hover:bg-gray-900;
   }
 
@@ -20,6 +20,10 @@
 
   .after-bullet {
     @apply after:mx-2 after:content-['•'];
+  }
+
+  .textarea {
+    resize: none;
   }
 
 
