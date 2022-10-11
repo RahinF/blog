@@ -29,8 +29,9 @@ const Comments = () => {
 
   return (
     <>
+      <h1>Comments</h1>
       <NewComment />
-      <div>
+      <div className="divide-y">
         {commentTree.map((comment) => {
           return <Comment key={comment.id} comment={comment} />;
         })}
