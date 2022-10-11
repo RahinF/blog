@@ -1,3 +1,4 @@
+import { PencilSimpleLine, TrashSimple } from "phosphor-react";
 import Card from "../components/Card";
 import Comments from "../features/comments/Comments";
 import Split from "../layout/Split";
@@ -6,9 +7,21 @@ const Post = () => {
   return (
     <Split>
       <Split.Left>
-        <div className="mb-4 text-gray-600">
-          <span className="after-bullet">21 January 2022</span>
-          <span>Thoughts</span>
+        <div className="flex justify-between">
+          <div className="mb-4 text-gray-600">
+            <span className="after-bullet">21 January 2022</span>
+            <span>Thoughts</span>
+          </div>
+
+          <div className="flex gap-4">
+            <button>
+              <PencilSimpleLine size={24} />
+            </button>
+
+            <button>
+              <TrashSimple size={24} />
+            </button>
+          </div>
         </div>
 
         <h1 className="text-4xl font-bold">
