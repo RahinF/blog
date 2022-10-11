@@ -6,11 +6,12 @@ import { Link } from "react-router-dom";
 import IRegisterForm from "../types/IRegisterForm";
 
 const PASSWORD_REGEX: RegExp = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-const USERNAME_MAX_LENGTH: number = 20;
+const USERNAME_MAX_LENGTH: number = 30;
 
 const Register = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(true);
+  const [usernameCurrentLength, setUsernameCurrentLength] = useState<number>(0);
   const {
     register,
     handleSubmit,
@@ -37,12 +38,24 @@ const Register = () => {
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="flex flex-col">
-            <label htmlFor="username" className="label">
+            <label
+              htmlFor="username"
+              className="label flex items-center justify-between"
+            >
               <span>
                 Username{" "}
                 <span aria-hidden className="text-error">
                   *
                 </span>
+              </span>
+              <span
+                aria-hidden
+                className={clsx({
+                  "text-sm": true,
+                  "text-error": errors.username,
+                })}
+              >
+                {`${usernameCurrentLength} / ${USERNAME_MAX_LENGTH}`}
               </span>
             </label>
             <input
@@ -55,30 +68,30 @@ const Register = () => {
               aria-required
               aria-invalid={errors.username ? "true" : "false"}
               {...register("username", {
-                required: "This field is required.",
+                required: "Username is required.",
                 maxLength: {
                   value: USERNAME_MAX_LENGTH,
-                  message: "Username cannot be more than 20 characters.",
+                  message: `Username cannot be more than ${USERNAME_MAX_LENGTH} characters.`,
                 },
+                onChange: (event) =>
+                  setUsernameCurrentLength(event.target.value.length),
               })}
             />
             {errors.username && (
-              <p
+              <span
                 role="alert"
                 className="mt-2 flex items-center gap-2 text-sm text-error"
               >
                 <Warning size={16} weight="fill" /> {errors.username.message}
-              </p>
+              </span>
             )}
           </div>
 
           <div className="flex flex-col">
             <label htmlFor="email" className="label">
-              <span>
-                Email{" "}
-                <span aria-hidden className="text-error">
-                  *
-                </span>
+              Email{" "}
+              <span aria-hidden className="text-error">
+                *
               </span>
             </label>
             <input
@@ -90,16 +103,16 @@ const Register = () => {
               })}
               aria-required
               aria-invalid={errors.email ? "true" : "false"}
-              {...register("email", { required: "This field is required." })}
+              {...register("email", { required: "Email address is required." })}
             />
 
             {errors.email && (
-              <p
+              <span
                 role="alert"
                 className="mt-2 flex items-center gap-2 text-sm text-error"
               >
                 <Warning size={16} weight="fill" /> {errors.email.message}
-              </p>
+              </span>
             )}
           </div>
 
@@ -136,7 +149,7 @@ const Register = () => {
               aria-required
               aria-invalid={errors.password ? "true" : "false"}
               {...register("password", {
-                required: "This field is required.",
+                required: "Password is required.",
                 pattern: {
                   value: PASSWORD_REGEX,
                   message:
@@ -146,12 +159,12 @@ const Register = () => {
             />
 
             {errors.password && (
-              <p
+              <span
                 role="alert"
                 className="mt-2 flex items-center gap-2 text-sm text-error"
               >
                 <Warning size={16} weight="fill" /> {errors.password.message}
-              </p>
+              </span>
             )}
           </div>
 

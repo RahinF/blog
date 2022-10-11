@@ -35,11 +35,9 @@ const Login = () => {
         >
           <div className="flex flex-col">
             <label htmlFor="email" className="label">
-              <span>
-                Email{" "}
-                <span aria-hidden className="text-error">
-                  *
-                </span>
+              Email{" "}
+              <span aria-hidden className="text-error">
+                *
               </span>
             </label>
             <input
@@ -51,7 +49,7 @@ const Login = () => {
               })}
               aria-required
               aria-invalid={errors.email ? "true" : "false"}
-              {...register("email", { required: "This field is required." })}
+              {...register("email", { required: "Email address is required." })}
             />
 
             {errors.email && (
@@ -97,17 +95,17 @@ const Login = () => {
               aria-required
               aria-invalid={errors.password ? "true" : "false"}
               {...register("password", {
-                required: "This field is required.",
+                required: "Password is required.",
               })}
             />
 
             {errors.password && (
-              <p
+              <span
                 role="alert"
                 className="mt-2 flex items-center gap-2 text-sm text-error"
               >
                 <Warning size={16} weight="fill" /> {errors.password.message}
-              </p>
+              </span>
             )}
           </div>
 
