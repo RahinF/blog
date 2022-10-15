@@ -1,9 +1,9 @@
-import React from 'react'
-
 const Footer = () => {
   return (
-    <div>Footer</div>
-  )
-}
+    <footer className="grid h-32 place-items-center border-t">
+      &copy; Copyright 2022, Rahin Farook
+    </footer>
+  );
+};
 
-export default Footer
+export default Footer;
