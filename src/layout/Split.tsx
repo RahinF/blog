@@ -1,24 +1,44 @@
+import clsx from "clsx";
+
 interface Props {
   children: React.ReactNode;
+  classes?: string;
 }
 
-const Split = ({ children }: Props) => {
+const Split = ({ children, classes }: Props) => {
   return (
-    <main className="m-auto flex min-h-screen max-w-screen-lg flex-col lg:flex-row">
+    <main
+      className={clsx({
+        "min-h-screen max-w-screen-lg": true,
+        "m-auto flex flex-col gap-20 px-4 py-20": true,
+        "lg:flex-row xl:px-0": true,
+        [classes as string]: classes,
+      })}
+    >
       {children}
     </main>
   );
 };
 
-Split.Left = ({ children }: Props) => {
+Split.Left = ({ children, classes }: Props) => {
   return (
-    <article className="basis-full pr-10 pt-20 lg:border-r">{children}</article>
+    <article
+      className={clsx("basis-full", {
+        [classes as string]: classes,
+      })}
+    >
+      {children}
+    </article>
   );
 };
 
-Split.Right = ({ children }: Props) => {
+Split.Right = ({ children, classes }: Props) => {
   return (
-    <aside className="flex basis-1/2 flex-col gap-8 pl-10 py-20">
+    <aside
+      className={clsx("basis-1/2", {
+        [classes as string]: classes,
+      })}
+    >
       {children}
     </aside>
   );

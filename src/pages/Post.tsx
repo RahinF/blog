@@ -2,6 +2,7 @@ import { PencilSimpleLine, TrashSimple } from "phosphor-react";
 import Card from "../components/Card";
 import Comments from "../features/comments/Comments";
 import Split from "../layout/Split";
+import posts from "../placeholder/post";
 
 const Post = () => {
   return (
@@ -24,17 +25,18 @@ const Post = () => {
           </div>
         </div>
 
-        <h1 className="text-4xl font-bold">
+        <h1 className="text-3xl font-bold">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Non earum
           similique tenetur illo veritatis harum!
         </h1>
         <div className="mt-10 overflow-hidden object-cover">
           <img
+            className="max-h-96 w-full object-cover"
             src="https://images.unsplash.com/photo-1657299171054-e679f630a776?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
             alt=""
           />
         </div>
-        <p className="mt-10 max-w-prose mb-20">
+        <p className="mt-10 mb-20 max-w-prose">
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus
           blanditiis quo molestias sapiente ad in exercitationem tempore,
           expedita, temporibus, dignissimos laudantium quae. Deleniti, aliquid
@@ -48,9 +50,9 @@ const Post = () => {
 
       <Split.Right>
         <h1 className="text-2xl font-bold">Related posts</h1>
-        <div className="flex flex-col gap-10">
-          {[...Array(5)].map((_, index) => (
-            <Card key={index} />
+        <div className="divide-y">
+          {posts.slice(0, 5).map((post) => (
+            <Card post={post} key={post.id} />
           ))}
         </div>
       </Split.Right>

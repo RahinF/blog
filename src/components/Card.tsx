@@ -1,11 +1,14 @@
-const Card = () => {
+import IPost from "../types/IPost";
+
+interface Props {
+  post: IPost;
+}
+
+const Card = ({ post }: Props) => {
   return (
     <article className="py-10">
-      <span className="text-sm text-primary">Technology</span>
-      <h1 className="font-bold line-clamp-2">
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Vel suscipit
-        quaerat architecto iure voluptates.
-      </h1>
+      <span className="text-sm capitalize text-primary">{post.category}</span>
+      <h1 className="font-bold line-clamp-2">{post.title}</h1>
     </article>
   );
 };
