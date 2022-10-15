@@ -34,7 +34,7 @@ const Post = () => {
             alt=""
           />
         </div>
-        <p className="mt-10">
+        <p className="mt-10 max-w-prose mb-20">
           Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus
           blanditiis quo molestias sapiente ad in exercitationem tempore,
           expedita, temporibus, dignissimos laudantium quae. Deleniti, aliquid

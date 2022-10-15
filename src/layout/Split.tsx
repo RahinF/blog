@@ -4,7 +4,7 @@ interface Props {
 
 const Split = ({ children }: Props) => {
   return (
-    <main className="m-auto flex min-h-screen max-w-screen-2xl flex-col lg:flex-row">
+    <main className="m-auto flex min-h-screen max-w-screen-lg flex-col lg:flex-row">
       {children}
     </main>
   );
@@ -12,13 +12,13 @@ const Split = ({ children }: Props) => {
 
 Split.Left = ({ children }: Props) => {
   return (
-    <article className="basis-full pr-20 pt-20 lg:border-r">{children}</article>
+    <article className="basis-full pr-10 pt-20 lg:border-r">{children}</article>
   );
 };
 
 Split.Right = ({ children }: Props) => {
   return (
-    <aside className="flex basis-1/2 flex-col gap-8 px-20 pt-20">
+    <aside className="flex basis-1/2 flex-col gap-8 pl-10 py-20">
       {children}
     </aside>
   );
