@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { Warning } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { COMMENT_MAX_LENGTH } from "../../constants/form";
 
 interface ICommentForm {
   text: string;
@@ -17,10 +18,6 @@ const NewComment = ({ fromReply, showInputBox }: Props) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const textRef = useRef<HTMLTextAreaElement | null>(null);
-
-  const COMMENT_MAX_LENGTH = 250;
-
-
 
   const {
     register,
@@ -50,8 +47,6 @@ const NewComment = ({ fromReply, showInputBox }: Props) => {
       showInputBox(false);
     }
   };
-
-  
 
   useEffect(() => {
     if (fromReply) {
@@ -108,10 +103,7 @@ const NewComment = ({ fromReply, showInputBox }: Props) => {
               cancel
             </button>
 
-            <button
-              className="btn"
-              disabled={!!errors.text}
-            >
+            <button className="btn" disabled={!!errors.text}>
               send
             </button>
           </div>

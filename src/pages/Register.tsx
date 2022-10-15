@@ -3,10 +3,8 @@ import { Warning } from "phosphor-react";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { PASSWORD_REGEX, USERNAME_MAX_LENGTH } from "../constants/form";
 import IRegisterForm from "../types/IRegisterForm";
-
-const PASSWORD_REGEX: RegExp = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-const USERNAME_MAX_LENGTH: number = 30;
 
 const Register = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
