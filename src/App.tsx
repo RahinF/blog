@@ -14,14 +14,12 @@ import Write from "./pages/Write";
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path="/">
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
-        <Route element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="write" element={<Write />} />
-          <Route path="post/:id" element={<Post />} />
-        </Route>
+        <Route path="write" element={<Write />} />
+        <Route path="post/:id" element={<Post />} />
       </Route>
     )
   );
