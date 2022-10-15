@@ -4,6 +4,7 @@ import { useState } from "react";
 import IComment from "../../types/IComment";
 import NewComment from "./NewComment";
 import pluralize from "pluralize";
+import { abbreviateNumber } from "../../utils/number";
 
 interface Props {
   comment: IComment;
@@ -15,6 +16,8 @@ const Comment = ({ comment, isChild }: Props) => {
   const [showInputBox, setShowInputBox] = useState<boolean>(false);
 
   const replies: number = comment.children!.length;
+
+  const NUMBER_OF_LIKES: number = 4000;
 
   const nestedComments = comment.children?.map((comment) => {
     return <Comment key={comment.id} comment={comment} isChild />;
@@ -39,13 +42,13 @@ const Comment = ({ comment, isChild }: Props) => {
               className="transition hover:scale-110"
               aria-label={`like comment alongside ${pluralize(
                 "other user",
-                4,
+                NUMBER_OF_LIKES,
                 true
               )}`}
             >
               <Heart size={24} />
             </button>
-            <span className="text-sm">2.6k</span>
+            <span className="text-sm">{abbreviateNumber(NUMBER_OF_LIKES)}</span>
           </div>
           <button onClick={() => setShowInputBox(true)} className="px-2 py-1">
             reply
