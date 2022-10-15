@@ -4,9 +4,28 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  [type="text"],
+  [type="email"],
+  [type="url"],
+  [type="password"],
+  [type="number"],
+  [type="date"],
+  [type="datetime-local"],
+  [type="month"],
+  [type="search"],
+  [type="tel"],
+  [type="time"],
+  [type="week"],
+  [multiple],
+  textarea,
+  select {
+    @apply w-full border-gray-200 focus:border-indigo-500 focus:ring-indigo-500;
+  }}
+
 @layer components {
   .label {
-    @apply py-2;
+    @apply py-2 text-sm font-medium;
   }
 
   .btn {

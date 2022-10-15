@@ -29,7 +29,7 @@ const Comments = () => {
 
   return (
     <>
-      <h1>Comments</h1>
+      <h1 className="text-xl font-medium">Comments</h1>
       <NewComment />
       <div className="divide-y">
         {commentTree.map((comment) => {

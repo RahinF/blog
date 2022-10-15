@@ -20,6 +20,8 @@ const NewComment = ({ fromReply, showInputBox }: Props) => {
 
   const COMMENT_MAX_LENGTH = 250;
 
+
+
   const {
     register,
     handleSubmit,
@@ -48,6 +50,8 @@ const NewComment = ({ fromReply, showInputBox }: Props) => {
       showInputBox(false);
     }
   };
+
+  
 
   useEffect(() => {
     if (fromReply) {
@@ -106,7 +110,7 @@ const NewComment = ({ fromReply, showInputBox }: Props) => {
 
             <button
               className="btn"
-              disabled={errors.text ? true : false || !textCurrentLength}
+              disabled={!!errors.text}
             >
               send
             </button>

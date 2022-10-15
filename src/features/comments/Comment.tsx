@@ -14,8 +14,7 @@ const Comment = ({ comment, isChild }: Props) => {
   const [showNestedComments, setShowNestedComments] = useState<boolean>(false);
   const [showInputBox, setShowInputBox] = useState<boolean>(false);
 
-  const replyCount: number = comment.children!.length;
-  const hasChildren: boolean = replyCount > 0;
+  const replies: number = comment.children!.length;
 
   const nestedComments = comment.children?.map((comment) => {
     return <Comment key={comment.id} comment={comment} isChild />;
@@ -33,7 +32,7 @@ const Comment = ({ comment, isChild }: Props) => {
 
       <p className="whitespace-pre-line break-all">{comment.text}</p>
 
-      <div className="flex flex-col gap-2 my-2">
+      <div className="my-2 flex flex-col gap-2">
         <div className="flex gap-2">
           <div className="flex items-center gap-2">
             <button
@@ -48,19 +47,16 @@ const Comment = ({ comment, isChild }: Props) => {
             </button>
             <span className="text-sm">2.6k</span>
           </div>
-          <button
-            onClick={() => setShowInputBox(true)}
-            className="px-2 py-1"
-          >
+          <button onClick={() => setShowInputBox(true)} className="px-2 py-1">
             reply
           </button>
         </div>
 
-        {hasChildren && (
+        {!!replies && (
           <button
             onClick={() => setShowNestedComments(!showNestedComments)}
             className="flex items-center gap-1 font-bold text-info"
-            aria-label={`show ${pluralize("reply", replyCount, true)}`}
+            aria-label={`show ${pluralize("reply", replies, true)}`}
             aria-expanded={showNestedComments}
           >
             {showNestedComments ? (
@@ -68,7 +64,7 @@ const Comment = ({ comment, isChild }: Props) => {
             ) : (
               <CaretDown weight="fill" />
             )}{" "}
-            {pluralize("reply", replyCount, true)}
+            {pluralize("reply", replies, true)}
           </button>
         )}
       </div>
