@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -20,8 +20,9 @@
   [multiple],
   textarea,
   select {
-    @apply w-full border-gray-200 focus:border-indigo-500 focus:ring-indigo-500;
-  }}
+    @apply w-full border-gray-200 focus:border-primary focus:ring-primary;
+  }
+}
 
 @layer components {
   .label {
@@ -29,21 +30,15 @@
   }
 
   .btn {
-    @apply h-12 py-2 uppercase font-medium px-4;
-    @apply text-white bg-gray-800 hover:bg-gray-900;
+    @apply h-12 py-2 px-4 font-medium uppercase;
+    @apply bg-gray-800 text-white hover:bg-gray-900;
   }
 
   .btn-primary {
-    @apply bg-red-300 border-red-300 hover:bg-red-500 text-white
+    @apply border-primary bg-primary text-white hover:bg-red-500;
   }
 
   .after-bullet {
     @apply after:mx-2 after:content-['•'];
   }
-
-  .textarea {
-    resize: none;
-  }
-
-
 }

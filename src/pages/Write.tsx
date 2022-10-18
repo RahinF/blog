@@ -27,8 +27,8 @@ const Write = () => {
       <form onSubmit={handleSubmit(onSubmit)} className="mt-20">
         <h1 className="mb-10 text-4xl font-bold">Create a new post</h1>
 
-        <div className="flex flex-col lg:flex-row lg:gap-20">
-          <div className="basis-full">
+        <div className="flex flex-col gap-4 lg:flex-row lg:gap-20">
+          <div className="flex basis-full flex-col gap-4">
             <div className="flex flex-col">
               <label
                 htmlFor="title"
@@ -131,7 +131,7 @@ const Write = () => {
             </div>
           </div>
 
-          <div className="basis-1/2">
+          <div className="flex basis-1/2 flex-col gap-4">
             <div className="flex flex-col">
               <label htmlFor="image" className="label">
                 Image
@@ -140,6 +140,7 @@ const Write = () => {
                 id="image"
                 type="file"
                 accept="image/*"
+                className="file:mr-2 file:h-12 file:cursor-pointer file:border-none file:bg-primary file:py-2 file:px-4 file:text-white"
                 {...register("image", {
                   onChange: (event) =>
                     setCurrentImageFile(event.target.files[0]),
@@ -149,8 +150,9 @@ const Write = () => {
             </div>
 
             {currentImageFile && (
-              <div className="w-full mt-2">
+              <div className="mt-2">
                 <img
+                  className="w-full"
                   src={URL.createObjectURL(currentImageFile)}
                   alt="preview of user's selected file"
                 />
