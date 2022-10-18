@@ -1,3 +1,4 @@
+import pluralize from "pluralize";
 import IComment from "../../types/IComment";
 import Comment from "./Comment";
 import comments from "./data";
@@ -27,16 +28,18 @@ function createTree(list: IComment[]) {
 const Comments = () => {
   const commentTree = createTree(comments);
 
+  const COMMENT_COUNT: number = 77 || 0;
+
   return (
-    <>
-      <h1 className="text-xl font-medium">Comments</h1>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-xl font-medium">{pluralize("Comment", COMMENT_COUNT, true)}</h1>
       <NewComment />
       <div className="divide-y">
         {commentTree.map((comment) => {
           return <Comment key={comment.id} comment={comment} />;
         })}
       </div>
-    </>
+    </div>
   );
 };
 

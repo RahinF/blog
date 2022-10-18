@@ -33,7 +33,7 @@ const Comment = ({ comment, isChild }: Props) => {
       <span className="after-bullet text-lg font-bold">{comment.author}</span>
       <span className="text-sm">3 days ago</span>
 
-      <p className="whitespace-pre-line break-all">{comment.text}</p>
+      <p className="whitespace-pre-line break-words">{comment.text}</p>
 
       <div className="my-2 flex flex-col gap-2">
         <div className="flex gap-2">
@@ -50,7 +50,10 @@ const Comment = ({ comment, isChild }: Props) => {
             </button>
             <span className="text-sm">{abbreviateNumber(NUMBER_OF_LIKES)}</span>
           </div>
-          <button onClick={() => setShowInputBox(true)} className="px-2 py-1">
+          <button
+            onClick={() => setShowInputBox(true)}
+            className="font-bold px-2 py-1 text-sm"
+          >
             reply
           </button>
         </div>
@@ -58,7 +61,7 @@ const Comment = ({ comment, isChild }: Props) => {
         {!!replies && (
           <button
             onClick={() => setShowNestedComments(!showNestedComments)}
-            className="flex items-center gap-1 font-bold text-info"
+            className="flex items-center gap-1 font-bold text-primary"
             aria-label={`show ${pluralize("reply", replies, true)}`}
             aria-expanded={showNestedComments}
           >
