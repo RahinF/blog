@@ -1,5 +1,6 @@
 interface IPost {
   id: number;
+  text: string;
   title: string;
   category: string;
   date: string;
