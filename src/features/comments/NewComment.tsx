@@ -63,9 +63,10 @@ const NewComment = ({ fromReply, showInputBox }: Props) => {
         <textarea
           id="text"
           rows={4}
+          placeholder="Add a comment"
           className={clsx({
-            textarea: true,
-            "h-10": !isExpanded,
+            "resize-none": true,
+            "h-10 overflow-hidden": !isExpanded,
             "h-full": fromReply || isExpanded,
             "border-error focus:border-error focus:ring-error": errors.text,
           })}
@@ -87,17 +88,17 @@ const NewComment = ({ fromReply, showInputBox }: Props) => {
         )}
       </div>
 
-      <div className="flex justify-between">
-        <span
-          aria-hidden
-          className={clsx({
-            "text-error": errors.text,
-          })}
-        >
-          {`${textCurrentLength} / ${COMMENT_MAX_LENGTH}`}
-        </span>
+      {(isExpanded || fromReply) && (
+        <div className="flex justify-between">
+          <span
+            aria-hidden
+            className={clsx({
+              "text-error": errors.text,
+            })}
+          >
+            {`${textCurrentLength} / ${COMMENT_MAX_LENGTH}`}
+          </span>
 
-        {(isExpanded || fromReply) && (
           <div className="flex gap-2">
             <button type="button" className="btn" onClick={handleCancel}>
               cancel
@@ -107,8 +108,8 @@ const NewComment = ({ fromReply, showInputBox }: Props) => {
               send
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </form>
   );
 };
