@@ -1,18 +1,39 @@
 import { PencilSimpleLine, TrashSimple } from "phosphor-react";
+import { useParams } from "react-router-dom";
 import Card from "../components/Card";
 import Comments from "../features/comments/Comments";
+import {
+  useGetPostQuery,
+  useGetPostsByCategoryQuery,
+} from "../features/posts/postsApiSlice";
 import Split from "../layout/Split";
-import posts from "../placeholder/post";
+import { timeAgoOrDate } from "../utils/date";
 
 const Post = () => {
+  const { id } = useParams();
+  const { data: post, isSuccess } = useGetPostQuery(id);
+  const { data: posts, isSuccess: postsSuccess } = useGetPostsByCategoryQuery(
+    post?.category,
+    {
+      skip: !post,
+    }
+  );
+
+  //  console.log(posts)
+
+  if (!isSuccess) return <p>loading...</p>;
+  if (!postsSuccess) return <p>loading...</p>;
+
   return (
     <Split>
       <Split.Left classes="flex flex-col gap-10">
         <header>
           <div className="flex justify-between">
             <div className="mb-4 text-gray-600">
-              <span className="after-bullet">21 January 2022</span>
-              <span>Thoughts</span>
+              <span className="after-bullet">
+                {timeAgoOrDate(post.createdAt)}
+              </span>
+              <span>{post.category}</span>
             </div>
 
             <div className="flex gap-4">
@@ -34,10 +55,7 @@ const Post = () => {
             </div>
           </div>
 
-          <h1 className="text-3xl font-bold">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Non earum
-            similique tenetur illo veritatis harum!
-          </h1>
+          <h1 className="text-3xl font-bold">{post.title}</h1>
         </header>
 
         <div className="overflow-hidden object-cover">
@@ -47,14 +65,7 @@ const Post = () => {
             alt=""
           />
         </div>
-        <p className="max-w-prose">
-          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minus
-          blanditiis quo molestias sapiente ad in exercitationem tempore,
-          expedita, temporibus, dignissimos laudantium quae. Deleniti, aliquid
-          dicta eius officiis ea expedita minima et accusamus eligendi quo sunt,
-          molestias vero deserunt sed consequatur ducimus consectetur beatae.
-          Maiores quis aperiam, iusto officia placeat cum?
-        </p>
+        <p className="max-w-prose">{post.text}</p>
 
         <div className="border-t pt-4">
           <Comments />
@@ -65,7 +76,7 @@ const Post = () => {
         <h1 className="text-2xl font-bold">Related posts</h1>
         <div className="divide-y">
           {posts.slice(0, 5).map((post) => (
-            <Card post={post} key={post.id} />
+            <Card post={post} key={post._id} />
           ))}
         </div>
       </Split.Right>

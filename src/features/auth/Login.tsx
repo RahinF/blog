@@ -3,9 +3,9 @@ import { Warning } from "phosphor-react";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { useLoginMutation } from "../features/auth/authApiSlice";
-import IError from "../types/IError";
-import ILoginForm from "../types/ILoginForm";
+import { useLoginMutation } from "./authApiSlice";
+import IError from "../../types/IError";
+import ILoginForm from "../../types/ILoginForm";
 
 const Login = () => {
   const [login, { isLoading }] = useLoginMutation();

@@ -1,10 +1,11 @@
 interface IPost {
-  id: number;
-  text: string;
+  _id: string;
   title: string;
   category: string;
-  date: string;
-  image: string;
+  text: string;
+  image?: string | undefined;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export default IPost;
