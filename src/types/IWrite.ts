@@ -1,8 +1,8 @@
 interface IWriteForm {
   title: string;
-  description: string;
+  text: string;
   category: string;
-  image: FileList;
+  file: FileList;
 }
 
 export default IWriteForm;

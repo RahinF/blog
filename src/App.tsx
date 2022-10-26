@@ -9,7 +9,7 @@ import PersistLogin from "./features/auth/PersistLogin";
 import RequireAuth from "./features/auth/RequireAuth";
 import Home from "./pages/Home";
 import Login from "./features/auth/Login";
-import Post from "./pages/Post";
+import Post from "./features/posts/Post";
 import Register from "./pages/Register";
 import Write from "./pages/Write";
 
@@ -23,6 +23,7 @@ const App = () => {
           <Route path="register" element={<Register />} />
           <Route element={<RequireAuth />}>
             <Route path="write" element={<Write />} />
+            <Route path="edit/:id" element={<Write edit/>} />
           </Route>
           <Route path="post/:id" element={<Post />} />
         </Route>

@@ -1,25 +1,108 @@
 import clsx from "clsx";
 import { Warning } from "phosphor-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { DESCRIPTION_MAX_LENGTH, TITLE_MAX_LENGTH } from "../constants/form";
+import { useNavigate, useParams } from "react-router-dom";
+import { TEXT_MAX_LENGTH, TITLE_MAX_LENGTH } from "../constants/form";
+import {
+  useCreatePostMutation,
+  useGetPostQuery,
+  useUpdatePostMutation,
+} from "../features/posts/postsApiSlice";
+import {
+  useDeleteFileMutation,
+  useUploadFileMutation,
+} from "../features/upload/uploadApiSlice";
 import IWriteForm from "../types/IWrite";
 
-const Write = () => {
+interface IWrite {
+  edit?: boolean;
+}
+
+const Write = ({ edit }: IWrite) => {
   const [titleCurrentLength, setTitleCurrentLength] = useState<number>(0);
-  const [descCurrentLength, setDescCurrentLength] = useState<number>(0);
-  const [currentImageFile, setCurrentImageFile] = useState<File | null>(null);
+  const [textCurrentLength, setTextCurrentLength] = useState<number>(0);
+  const [filePreview, setFilePreview] = useState<string | undefined>(undefined);
+
+  const navigate = useNavigate();
+
+  const [createPost] = useCreatePostMutation();
+  const [updatePost] = useUpdatePostMutation();
+  const [uploadFile] = useUploadFileMutation();
+  const [deleteFile] = useDeleteFileMutation();
+
+  const { id } = useParams();
+  const { data: post, isSuccess } = useGetPostQuery(id, { skip: !edit });
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<IWriteForm>({ mode: "onChange" });
+  } = useForm<IWriteForm>({
+    mode: "onChange",
+  });
+
+  useEffect(() => {
+    if (!edit) return;
+
+    if (isSuccess) {
+      const { title, text, image, category } = post;
+
+      if (image) {
+        setFilePreview(`http://localhost:4000/uploads/${image}`);
+      }
+
+      reset({ title, text, category });
+    }
+  }, [edit, isSuccess, post, reset]);
+
+  const handleUploadFile = async (file: File) => {
+    const formdata = new FormData();
+    formdata.append("file", file);
+    return await uploadFile(formdata).unwrap();
+  };
+
+  const handleDeleteOldFile = async () => {
+    if (!edit || !post?.image) return;
+    await deleteFile(post.image);
+  };
 
   const onSubmit: SubmitHandler<IWriteForm> = async (data) => {
-    console.log(data);
-    const file = data.image[0];
-    console.log(file);
+    const { file, ...rest } = data;
+
+    let image: string | undefined;
+    let postId: string;
+
+    const fileSelected = !!file.length;
+
+    if (fileSelected) {
+      await handleDeleteOldFile();
+      image = await handleUploadFile(file[0]);
+    }
+
+    if (edit) {
+      if (!post) return;
+      postId = await updatePost({ ...rest, image, postId: post._id }).unwrap();
+    } else {
+      postId = await createPost({ ...rest, image }).unwrap();
+    }
+    navigate(`/post/${postId}`);
+  };
+
+  const createFilePreview = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files as FileList;
+    const file = files[0];
+
+    if (!file)
+      if (post?.image) {
+        setFilePreview(`http://localhost:4000/uploads/${post?.image}`);
+      } else {
+        return setFilePreview(undefined);
+      }
+
+    const fileURL = URL.createObjectURL(file);
+    setFilePreview(fileURL);
   };
 
   return (
@@ -81,11 +164,11 @@ const Write = () => {
 
             <div className="flex flex-col">
               <label
-                htmlFor="description"
+                htmlFor="text"
                 className="label flex items-center justify-between"
               >
                 <span>
-                  Description{" "}
+                  Text{" "}
                   <span aria-hidden className="text-error">
                     *
                   </span>
@@ -94,38 +177,37 @@ const Write = () => {
                   aria-hidden
                   className={clsx({
                     "text-sm": true,
-                    "text-error": errors.description,
+                    "text-error": errors.text,
                   })}
                 >
-                  {`${descCurrentLength} / ${DESCRIPTION_MAX_LENGTH}`}
+                  {`${textCurrentLength} / ${TEXT_MAX_LENGTH}`}
                 </span>
               </label>
               <textarea
-                id="description"
+                id="text"
                 rows={10}
                 className={clsx({
                   "border-error focus:border-error focus:ring-error":
-                    errors.description,
+                    errors.text,
                 })}
                 aria-required
-                aria-invalid={errors.description ? "true" : "false"}
-                {...register("description", {
-                  required: "Description is required.",
+                aria-invalid={errors.text ? "true" : "false"}
+                {...register("text", {
+                  required: "Text is required.",
                   maxLength: {
-                    value: DESCRIPTION_MAX_LENGTH,
-                    message: `Description cannot be more than ${DESCRIPTION_MAX_LENGTH} characters.`,
+                    value: TEXT_MAX_LENGTH,
+                    message: `Text cannot be more than ${TEXT_MAX_LENGTH} characters.`,
                   },
                   onChange: (event) =>
-                    setDescCurrentLength(event.target.value.length),
+                    setTextCurrentLength(event.target.value.length),
                 })}
               />
-              {errors.description && (
+              {errors.text && (
                 <span
                   role="alert"
                   className="mt-2 flex items-center gap-2 text-sm text-error"
                 >
-                  <Warning size={16} weight="fill" />{" "}
-                  {errors.description.message}
+                  <Warning size={16} weight="fill" /> {errors.text.message}
                 </span>
               )}
             </div>
@@ -133,27 +215,26 @@ const Write = () => {
 
           <div className="flex basis-1/2 flex-col gap-4">
             <div className="flex flex-col">
-              <label htmlFor="image" className="label">
+              <label htmlFor="file" className="label">
                 Image
               </label>
               <input
-                id="image"
+                id="file"
                 type="file"
                 accept="image/*"
                 className="file:mr-2 file:h-12 file:cursor-pointer file:border-none file:bg-primary file:py-2 file:px-4 file:text-white"
-                {...register("image", {
-                  onChange: (event) =>
-                    setCurrentImageFile(event.target.files[0]),
+                {...register("file", {
+                  onChange: createFilePreview,
                 })}
                 aria-label="select an image file"
               />
             </div>
 
-            {currentImageFile && (
+            {filePreview && (
               <div className="mt-2">
                 <img
                   className="w-full"
-                  src={URL.createObjectURL(currentImageFile)}
+                  src={filePreview}
                   alt="preview of user's selected file"
                 />
               </div>
@@ -189,7 +270,9 @@ const Write = () => {
                 </span>
               )}
             </div>
-            <button className="btn mt-2 w-full">post</button>
+            <button className="btn mt-2 w-full">
+              {edit ? "update" : "post"}
+            </button>
           </div>
         </div>
       </form>

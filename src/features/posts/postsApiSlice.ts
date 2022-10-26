@@ -1,10 +1,9 @@
 import { apiSlice } from "../../app/api/apiSlice";
 import IPost from "../../types/IPost";
-import IWriteForm from "../../types/IWrite";
+import IPostRequest from "../../types/IPostRequest";
 
 const postsApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    
     getAllPosts: builder.query<IPost[], void>({
       query: () => ({
         url: "/posts",
@@ -23,18 +22,15 @@ const postsApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    createPost: builder.mutation<{ message: string }, IWriteForm>({
+    createPost: builder.mutation<string, IPostRequest>({
       query: (input) => ({
-        url: `/posts`,
+        url: "/posts",
         method: "POST",
         body: input,
       }),
     }),
 
-    updatePost: builder.mutation<
-      { message: string },
-      IWriteForm & { postId: string }
-    >({
+    updatePost: builder.mutation<string, IPostRequest & { postId: string }>({
       query: (input) => ({
         url: "/posts",
         method: "PUT",
@@ -42,11 +38,11 @@ const postsApiSlice = apiSlice.injectEndpoints({
       }),
     }),
 
-    deletePost: builder.mutation<{ message: string }, { postId: string }>({
+    deletePost: builder.mutation<string, string>({
       query: (postId) => ({
         url: "/posts",
         method: "DELETE",
-        body: postId,
+        body: { postId },
       }),
     }),
   }),

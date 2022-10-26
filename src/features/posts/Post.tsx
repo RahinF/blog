@@ -1,13 +1,14 @@
 import { PencilSimpleLine, TrashSimple } from "phosphor-react";
-import { useParams } from "react-router-dom";
-import Card from "../components/Card";
-import Comments from "../features/comments/Comments";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import Card from "../../components/Card";
+import Comments from "../comments/Comments";
 import {
+  useDeletePostMutation,
   useGetPostQuery,
   useGetPostsByCategoryQuery,
-} from "../features/posts/postsApiSlice";
-import Split from "../layout/Split";
-import { timeAgoOrDate } from "../utils/date";
+} from "./postsApiSlice";
+import Split from "../../layout/Split";
+import { timeAgoOrDate } from "../../utils/date";
 
 const Post = () => {
   const { id } = useParams();
@@ -19,10 +20,17 @@ const Post = () => {
     }
   );
 
-  //  console.log(posts)
+  const [deletePost] = useDeletePostMutation();
+  const navigate = useNavigate();
 
   if (!isSuccess) return <p>loading...</p>;
   if (!postsSuccess) return <p>loading...</p>;
+
+  const handleDelete = async () => {
+    console.log("delte");
+    await deletePost(post._id);
+    navigate("/");
+  };
 
   return (
     <Split>
@@ -37,17 +45,20 @@ const Post = () => {
             </div>
 
             <div className="flex gap-4">
-              <button
-                aria-label="edit post"
-                className="flex items-center gap-2"
-              >
-                <PencilSimpleLine size={24} />
-                <span className="text-sm font-medium">Edit</span>
-              </button>
+              <Link to={`/edit/${post._id}`}>
+                <button
+                  aria-label="edit post"
+                  className="flex items-center gap-2"
+                >
+                  <PencilSimpleLine size={24} />
+                  <span className="text-sm font-medium">Edit</span>
+                </button>
+              </Link>
 
               <button
                 aria-label="delete post"
                 className="flex items-center gap-2"
+                onClick={handleDelete}
               >
                 <TrashSimple size={24} />
                 <span className="text-sm font-medium">Delete</span>
@@ -61,8 +72,8 @@ const Post = () => {
         <div className="overflow-hidden object-cover">
           <img
             className="max-h-96 w-full object-cover"
-            src="https://images.unsplash.com/photo-1657299171054-e679f630a776?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
-            alt=""
+            src={`http://localhost:4000/uploads/${post.image}`}
+            alt={post.title}
           />
         </div>
         <p className="max-w-prose">{post.text}</p>
