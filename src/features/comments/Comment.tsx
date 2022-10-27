@@ -1,9 +1,13 @@
 import clsx from "clsx";
 import { CaretDown, CaretUp } from "phosphor-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import IComment from "../../types/IComment";
 import NewComment from "./NewComment";
 import pluralize from "pluralize";
+import { timeAgoOrDate } from "../../utils/date";
+import { useAppSelector } from "../../app/hooks";
+import { selectCurrentUserId } from "../auth/authSlice";
+import { useDeleteCommentMutation } from "./commentsApiSlice";
 
 interface Props {
   comment: IComment;
@@ -13,12 +17,35 @@ interface Props {
 const Comment = ({ comment, isChild }: Props) => {
   const [showNestedComments, setShowNestedComments] = useState<boolean>(false);
   const [showInputBox, setShowInputBox] = useState<boolean>(false);
+  const [author, setAuthor] = useState<string>("");
 
-  const replies: number = comment.children!.length;
+  const isLoggedIn = useAppSelector(selectCurrentUserId);
+
+  const [deleteComment] = useDeleteCommentMutation();
+
+  const replies: number = comment.children?.length || 0;
 
   const nestedComments = comment.children?.map((comment) => {
-    return <Comment key={comment.id} comment={comment} isChild />;
+    return <Comment key={comment._id} comment={comment} isChild />;
   });
+
+  useEffect(() => {
+    if (comment.author) {
+      if (typeof comment.author === "object") {
+        setAuthor(comment.author.username);
+      } else {
+        setAuthor(comment.author);
+      }
+    }
+  }, [comment]);
+
+  const handleDeleteComment = async () => {
+    try {
+      await deleteComment(comment._id);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div
@@ -27,19 +54,12 @@ const Comment = ({ comment, isChild }: Props) => {
         "ml-6": isChild,
       })}
     >
-      <span className="after-bullet text-lg font-bold">{comment.author}</span>
-      <span className="text-sm">3 days ago</span>
+      <span className="after-bullet text-lg font-bold">{author}</span>
+      <span className="text-sm">{timeAgoOrDate(comment.createdAt)}</span>
 
       <p className="whitespace-pre-line break-words">{comment.text}</p>
 
       <div className="my-2 flex gap-2">
-        <button
-          onClick={() => setShowInputBox(true)}
-          className="px-2 py-1 text-sm font-bold uppercase"
-        >
-          reply
-        </button>
-
         {!!replies && (
           <button
             onClick={() => setShowNestedComments(!showNestedComments)}
@@ -55,9 +75,30 @@ const Comment = ({ comment, isChild }: Props) => {
             {pluralize("reply", replies, true)}
           </button>
         )}
+
+        <button
+          onClick={() => setShowInputBox(true)}
+          className="px-2 py-1 text-sm font-bold uppercase"
+        >
+          reply
+        </button>
+        {isLoggedIn && (
+          <button
+            onClick={handleDeleteComment}
+            className="px-2 py-1 text-sm font-bold uppercase"
+          >
+            delete
+          </button>
+        )}
       </div>
 
-      {showInputBox && <NewComment fromReply showInputBox={setShowInputBox} />}
+      {showInputBox && (
+        <NewComment
+          fromReply
+          showInputBox={setShowInputBox}
+          parentId={comment._id}
+        />
+      )}
       {showNestedComments && <div className="divide-y">{nestedComments}</div>}
     </div>
   );

@@ -79,7 +79,7 @@ const Post = () => {
         <p className="max-w-prose">{post.text}</p>
 
         <div className="border-t pt-4">
-          <Comments />
+          <Comments postId={post._id}/>
         </div>
       </Split.Left>
 

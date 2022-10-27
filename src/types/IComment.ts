@@ -1,9 +1,14 @@
+import IUser from "./IUser";
+
 interface IComment {
-  id: number;
-  parentId: number | null;
-  text: string;
-  author: string;
+  _id: string;
+  postId: string;
+  parentId?: string;
+  author: IUser | string;
   children?: IComment[];
+  text: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export default IComment;
