@@ -48,6 +48,30 @@ const postsApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
+
+apiSlice.enhanceEndpoints({
+  endpoints: {
+    getAllPosts: {
+      providesTags: ["Posts"],
+    },
+    getPostsByCategory: {
+      providesTags: ["Posts"],
+    },
+    getPost: {
+      providesTags: ["Post"],
+    },
+    createPost: {
+      invalidatesTags: ["Posts"],
+    },
+    updatePost: {
+      invalidatesTags: ["Posts", "Post"],
+    },
+    deletePost: {
+      invalidatesTags: ["Posts"],
+    },
+  },
+});
+
 export const {
   useGetAllPostsQuery,
   useGetPostsByCategoryQuery,

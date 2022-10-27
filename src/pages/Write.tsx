@@ -95,11 +95,13 @@ const Write = ({ edit }: IWrite) => {
     const file = files[0];
 
     if (!file)
-      if (post?.image) {
-        setFilePreview(`http://localhost:4000/uploads/${post?.image}`);
-      } else {
-        return setFilePreview(undefined);
-      }
+     
+        setFilePreview(
+          post?.image
+            ? `http://localhost:4000/uploads/${post?.image}`
+            : undefined
+        );
+        
 
     const fileURL = URL.createObjectURL(file);
     setFilePreview(fileURL);
