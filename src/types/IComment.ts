@@ -11,4 +11,19 @@ interface IComment {
   updatedAt: Date;
 }
 
+export type Mode = "reply" | "edit" | "create" | "none";
+
+export interface NewCommentProps {
+  mode?: Mode;
+  parentId?: string;
+  fromReply?: boolean;
+  commentToEdit?: { commentId: string; text: string };
+  showInputBox?: React.Dispatch<React.SetStateAction<Mode>>;
+}
+
+export interface INestedComments {
+  comment: IComment;
+  author: string;
+}
+
 export default IComment;

@@ -5,21 +5,25 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { COMMENT_MAX_LENGTH, USERNAME_MAX_LENGTH } from "../../constants/form";
+import { NewCommentProps } from "../../types/IComment";
 import { selectCurrentUserId } from "../auth/authSlice";
-import { useCreateCommentMutation } from "./commentsApiSlice";
+import {
+  useCreateCommentMutation,
+  useUpdateCommentMutation,
+} from "./commentsApiSlice";
 
 interface ICommentForm {
-  username: string;
+  username?: string;
   text: string;
 }
 
-interface Props {
-  parentId?: string;
-  fromReply?: boolean;
-  showInputBox?: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const NewComment = ({ parentId, fromReply, showInputBox }: Props) => {
+const NewComment = ({
+  mode = "none",
+  parentId,
+  fromReply,
+  commentToEdit,
+  showInputBox,
+}: NewCommentProps) => {
   const [textCurrentLength, setTextCurrentLength] = useState<number>(0);
   const [usernameCurrentLength, setUsernameCurrentLength] = useState<number>(0);
 
@@ -28,6 +32,7 @@ const NewComment = ({ parentId, fromReply, showInputBox }: Props) => {
   const currentUser = useAppSelector(selectCurrentUserId);
 
   const [createComment] = useCreateCommentMutation();
+  const [updateComment] = useUpdateCommentMutation();
 
   const { id: postId } = useParams();
 
@@ -47,10 +52,17 @@ const NewComment = ({ parentId, fromReply, showInputBox }: Props) => {
     onChange: (event) => setTextCurrentLength(event.target.value.length),
   });
 
-  const onSubmit: SubmitHandler<ICommentForm> = async (data) => {
-    const { username, text } = data;
+  const clearForm = () => {
+    reset();
+    setUsernameCurrentLength(0);
+    setTextCurrentLength(0);
+    if (showInputBox) {
+      showInputBox("none");
+    }
+  };
 
-    if (!postId) return;
+  const handleCreateComment = async ({ username, text }: ICommentForm) => {
+    if (!postId || !username) return;
 
     const inputs = {
       postId,
@@ -59,29 +71,39 @@ const NewComment = ({ parentId, fromReply, showInputBox }: Props) => {
       text,
     };
 
-   try {
-    await createComment(inputs).unwrap();
-    reset();
-    closeReplyBox();
-
-   } catch (error) {
-    //  comment post failed handle error i.e toast
-   }
-    
-
-    
+    try {
+      await createComment(inputs).unwrap();
+      clearForm();
+    } catch (error) {
+      //  comment post failed handle error i.e toast
+    }
   };
 
-  const closeReplyBox = () => { 
-    if (showInputBox) {
-      showInputBox(false);
-    }
-   }
+  const handleEditComment = async (text: string) => {
+    if (!commentToEdit?.commentId) return;
 
-  const handleCancel = () => {
-    reset();
-    setTextCurrentLength(0);
-    closeReplyBox();
+    const inputs = {
+      commentId: commentToEdit.commentId,
+      text,
+    };
+
+    try {
+      await updateComment(inputs).unwrap();
+      clearForm();
+    } catch (error) {
+      // handle edit comment error
+    }
+  };
+
+  const onSubmit: SubmitHandler<ICommentForm> = async (data) => {
+    const { username, text } = data;
+
+    if (mode === "edit") {
+      // edit comment
+      await handleEditComment(text);
+    } else if (mode === "reply" || mode === "create") {
+      await handleCreateComment({ username, text });
+    }
   };
 
   useEffect(() => {
@@ -92,13 +114,30 @@ const NewComment = ({ parentId, fromReply, showInputBox }: Props) => {
 
   useEffect(() => {
     if (currentUser) {
+      setUsernameCurrentLength(currentUser.length);
       reset({ username: currentUser });
     }
   }, [currentUser, reset]);
 
+  useEffect(() => {
+    if(!currentUser) return;
+    if (mode === "edit") {
+      if (!commentToEdit) return;
+      setTextCurrentLength(commentToEdit.text.length);
+      reset({ username: currentUser, text: commentToEdit.text });
+    } else if (mode === "reply") {
+      setTextCurrentLength(0);
+      reset({ username: currentUser, text: "" });
+    }
+  }, [mode, currentUser, commentToEdit, reset]);
+
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-      <div className={clsx({ "flex flex-col": true, "hidden": currentUser })}>
+      <div
+        className={clsx("flex flex-col",{
+          "hidden": currentUser,
+        })}
+      >
         <label
           htmlFor="username"
           className="label flex items-center justify-between"
@@ -146,14 +185,31 @@ const NewComment = ({ parentId, fromReply, showInputBox }: Props) => {
           </span>
         )}
       </div>
+
       <div className="flex flex-col">
-        <label htmlFor="text" className="sr-only">
-          add comment
+        <label
+          htmlFor="text"
+          className="label flex items-center justify-between"
+        >
+          <span>
+            Comment{" "}
+            <span aria-hidden className="text-error">
+              *
+            </span>
+          </span>
+          <span
+            aria-hidden
+            className={clsx({
+              "text-sm": true,
+              "text-error": errors.text,
+            })}
+          >
+            {`${textCurrentLength} / ${COMMENT_MAX_LENGTH}`}
+          </span>
         </label>
         <textarea
           id="text"
           rows={4}
-          placeholder="Add a comment"
           className={clsx({
             "resize-none": true,
             "border-error focus:border-error focus:ring-error": errors.text,
@@ -175,23 +231,12 @@ const NewComment = ({ parentId, fromReply, showInputBox }: Props) => {
         )}
       </div>
 
-      <div className="flex justify-between">
-        <span
-          aria-hidden
-          className={clsx({
-            "text-error": errors.text,
-          })}
-        >
-          {`${textCurrentLength} / ${COMMENT_MAX_LENGTH}`}
-        </span>
+      <div className="flex justify-end gap-2">
+        <button type="button" className="btn" onClick={clearForm}>
+          cancel
+        </button>
 
-        <div className="flex gap-2">
-          <button type="button" className="btn" onClick={handleCancel}>
-            cancel
-          </button>
-
-          <button className="btn">send</button>
-        </div>
+        <button className="btn">{mode !== "edit" ? "send" : "update"}</button>
       </div>
     </form>
   );

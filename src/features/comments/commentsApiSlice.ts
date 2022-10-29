@@ -12,39 +12,44 @@ interface ICommentResponse {
     message: string;
   }
 
-const commentsApiSlice = apiSlice.injectEndpoints({
-  endpoints: (builder) => ({
-    getAllComments: builder.query<IComment[], string>({
-      query: (postId) => ({
-        url: `/comments/${postId}`,
-      }),
-    }),
+  interface IUpdateCommentRequest {
+    commentId: string;
+    text: string;
+  }
 
-    createComment: builder.mutation<ICommentResponse, ICommentRequest>({
-      query: (input) => ({
-        url: "/comments",
-        method: "POST",
-        body: input,
+  const commentsApiSlice = apiSlice.injectEndpoints({
+    endpoints: (builder) => ({
+      getAllComments: builder.query<IComment[], string>({
+        query: (postId) => ({
+          url: `/comments/${postId}`,
+        }),
       }),
-    }),
 
-    updateComment: builder.mutation({
-      query: (input) => ({
-        url: "/comments",
-        method: "PUT",
-        body: input,
+      createComment: builder.mutation<ICommentResponse, ICommentRequest>({
+        query: (input) => ({
+          url: "/comments",
+          method: "POST",
+          body: input,
+        }),
       }),
-    }),
 
-    deleteComment: builder.mutation<string, string>({
-      query: (commentId) => ({
-        url: "/comments",
-        method: "DELETE",
-        body: { commentId },
+      updateComment: builder.mutation<string, IUpdateCommentRequest>({
+        query: (input) => ({
+          url: "/comments",
+          method: "PUT",
+          body: input,
+        }),
+      }),
+
+      deleteComment: builder.mutation<string, string>({
+        query: (commentId) => ({
+          url: "/comments",
+          method: "DELETE",
+          body: { commentId },
+        }),
       }),
     }),
-  }),
-});
+  });
 
 apiSlice.enhanceEndpoints({
   endpoints: {

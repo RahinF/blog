@@ -13,14 +13,17 @@ const Comments = ({ postId }: IComments) => {
 
   return (
     <div className="flex flex-col gap-4">
+      <NewComment mode="create"/>
+
+      {!!COMMENT_COUNT && 
       <h1 className="text-xl font-medium">
         {pluralize("Comment", COMMENT_COUNT, true)}
       </h1>
-      <NewComment />
+      }
       <div className="divide-y">
         {isSuccess &&
           comments.map((comment) => {
-            return <Comment key={comment._id} comment={comment} />;
+            return <Comment key={comment._id} comment={comment} isParent />;
           })}
       </div>
     </div>
