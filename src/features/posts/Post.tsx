@@ -44,14 +44,14 @@ const Post = () => {
               <span>{post.category}</span>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex items-center gap-4">
               <Link to={`/edit/${post._id}`}>
                 <button
                   aria-label="edit post"
                   className="flex items-center gap-2"
                 >
                   <PencilSimpleLine size={24} />
-                  <span className="text-sm font-medium">Edit</span>
+                  <span className="text-sm font-bold uppercase">edit</span>
                 </button>
               </Link>
 
@@ -61,7 +61,7 @@ const Post = () => {
                 onClick={handleDelete}
               >
                 <TrashSimple size={24} />
-                <span className="text-sm font-medium">Delete</span>
+                <span className="text-sm font-bold uppercase">delete</span>
               </button>
             </div>
           </div>
@@ -69,17 +69,19 @@ const Post = () => {
           <h1 className="text-3xl font-bold">{post.title}</h1>
         </header>
 
-        <div className="overflow-hidden object-cover">
+        <div className="overflow-hidden">
+          {post.image && 
           <img
-            className="max-h-96 w-full object-cover"
-            src={`http://localhost:4000/uploads/${post.image}`}
-            alt={post.title}
+          className="w-full object-cover aspect-video"
+          src={`http://localhost:4000/uploads/${post.image}`}
+          alt={post.title}
           />
+        }
         </div>
-        <p className="max-w-prose">{post.text}</p>
+        <p className="max-w-prose whitespace-pre-line break-words">{post.text}</p>
 
         <div className="border-t pt-4">
-          <Comments postId={post._id}/>
+          <Comments postId={post._id} />
         </div>
       </Split.Left>
 

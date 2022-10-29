@@ -16,25 +16,26 @@ const Card = ({ post, fullSize }: ICard) => {
   if (fullSize)
     return (
       <Card.Container id={post._id} className="group">
-        <img
-          className="max-h-60 w-full object-cover transition group-hover:scale-105 group-hover:shadow-lg"
-          src={`http://localhost:4000/uploads/${post.image}`}
-          alt={post.title}
-        />
-
-        <div className="mt-4 flex flex-col gap-2">
-          <header>
-            <Card.Category category={post.category} />
-            <Card.Heading title={post.title} />
-          </header>
-
-          <p className="text-sm line-clamp-3">{post.text}</p>
+        <div className="w-full overflow-hidden">
+          <img
+            className="aspect-video object-cover transition group-hover:scale-125"
+            src={`http://localhost:4000/uploads/${post.image}`}
+            alt={post.title}
+          />
         </div>
+
+        <header className="mt-4 flex flex-col gap-2">
+          <Card.Category category={post.category} />
+          <Card.Heading title={post.title} />
+        </header>
       </Card.Container>
     );
 
   return (
-    <Card.Container id={post._id} className="py-10 first:pt-0 last:pb-0">
+    <Card.Container
+      id={post._id}
+      className="flex gap-2 py-6 first:pt-0 last:pb-0"
+    >
       <Card.Category category={post.category} />
       <Card.Heading title={post.title} />
     </Card.Container>
@@ -55,7 +56,7 @@ Card.Heading = ({ title }: { title: string }) => {
 
 Card.Category = ({ category }: { category: string }) => {
   return (
-    <span className="text-sm font-medium capitalize text-primary">
+    <span className="text-sm font-medium uppercase text-primary">
       {category}
     </span>
   );

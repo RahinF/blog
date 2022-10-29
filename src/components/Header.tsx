@@ -77,7 +77,7 @@ const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-10 border-b bg-white/90">
+    <header className="sticky top-0 z-10 border-b bg-white/75 backdrop-blur-md">
       <div className="flex w-full justify-center bg-black">
         <button
           className="sr-only text-white focus:not-sr-only"
