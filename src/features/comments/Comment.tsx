@@ -6,7 +6,7 @@ import {
   PencilSimpleLine,
   TrashSimple,
 } from "phosphor-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import IComment, {
   INestedComments,
   Mode,
@@ -18,6 +18,7 @@ import { timeAgoOrDate } from "../../utils/date";
 import { useAppSelector } from "../../app/hooks";
 import { selectCurrentUserId } from "../auth/authSlice";
 import { useDeleteCommentMutation } from "./commentsApiSlice";
+import OutSideClick from "../../hooks/useOutsideClick";
 
 interface Props {
   isParent?: boolean;
@@ -38,18 +39,13 @@ const NestedComments = ({ comment, author }: INestedComments) => {
 
 const Comment = ({ comment, isParent, replyTo }: Props) => {
   const [showNestedComments, setShowNestedComments] = useState<boolean>(false);
-
   const [mode, setMode] = useState<Mode>("none");
-
   const [newCommentProps, setNewCommentProps] = useState<NewCommentProps>();
-
   const [author, setAuthor] = useState<string>("");
-
   const isLoggedIn = useAppSelector(selectCurrentUserId);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const [deleteComment] = useDeleteCommentMutation();
-
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   const replies: number = comment.children?.length || 0;
 
@@ -81,13 +77,63 @@ const Comment = ({ comment, isParent, replyTo }: Props) => {
     }
   }, [mode, comment._id, comment.text]);
 
+  const firstButtonRef = useRef<HTMLButtonElement>(null);
+  const lastButtonRef = useRef<HTMLButtonElement>(null);
+
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (!isDropdownOpen || !firstButtonRef.current || !lastButtonRef.current)
+      return;
+
+    if (event.code === "Escape") {
+      setIsDropdownOpen(false);
+    }
+
+    if (document.activeElement === firstButtonRef.current) {
+      if (event.shiftKey && event.code === "Tab") {
+        event.preventDefault();
+        lastButtonRef.current.focus();
+      }
+    }
+
+    if (document.activeElement === lastButtonRef.current) {
+      if (event.code === "Tab" && !event.shiftKey) {
+        event.preventDefault();
+        firstButtonRef.current.focus();
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isDropdownOpen) {
+      firstButtonRef.current?.focus();
+    }
+  }, [isDropdownOpen]);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
+
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
+  };
+
   const handleDeleteComment = async () => {
     try {
       await deleteComment(comment._id);
+      closeDropdown();
     } catch (error) {
       console.log(error);
     }
   };
+
+  const setModeOnClick = (mode: Mode) => {
+    setMode((prev) => (prev === mode ? "none" : mode));
+
+    if(isDropdownOpen){
+      setIsDropdownOpen(false)
+    }
+  };
+
 
   return (
     <>
@@ -125,7 +171,7 @@ const Comment = ({ comment, isParent, replyTo }: Props) => {
             )}
 
             <button
-              onClick={() => setMode(mode === "reply" ? "none" : "reply")}
+              onClick={() => setModeOnClick("reply")}
               className="flex items-center gap-2 py-1 text-sm font-bold uppercase transition hover:scale-105 hover:text-primary"
             >
               <Chat size={24} />
@@ -135,39 +181,45 @@ const Comment = ({ comment, isParent, replyTo }: Props) => {
         </div>
 
         {isLoggedIn && (
-          <div className="relative">
+          <div className="relative self-start" onKeyDown={handleKeyPress}>
             <button
-              onClick={() => setIsMenuOpen((prev) => !prev)}
+              onClick={toggleDropdown}
               className={clsx({
+                "rounded-full border p-3": true,
                 "opacity-0 transition focus:opacity-100 group-hover:opacity-100":
                   true,
-                "opacity-100": isMenuOpen,
+                "opacity-100": isDropdownOpen,
               })}
               aria-label="options menu"
-              aria-expanded={isMenuOpen}
+              aria-expanded={isDropdownOpen}
             >
               <DotsThreeVertical size={24} weight="bold" />
             </button>
 
-            {isMenuOpen && (
-              <div
-                className="absolute bottom-0 right-0 border p-4"
+            {isDropdownOpen && (
+              <OutSideClick
+                onClick={closeDropdown}
+                className="absolute top-16 right-0 border bg-white p-4"
               >
+
+
                 <button
+                  ref={firstButtonRef}
                   className="flex items-center gap-2 py-1 text-sm font-bold uppercase transition hover:scale-105 hover:text-primary"
-                  onClick={() => setMode(mode === "edit" ? "none" : "edit")}
+                  onClick={() => setModeOnClick("edit")}
                 >
                   <PencilSimpleLine size={24} />
                   edit
                 </button>
                 <button
+                  ref={lastButtonRef}
                   onClick={handleDeleteComment}
                   className="flex items-center gap-2 py-1 text-sm font-bold uppercase transition hover:scale-105 hover:text-primary"
                 >
                   <TrashSimple size={24} />
                   delete
                 </button>
-              </div>
+              </OutSideClick>
             )}
           </div>
         )}

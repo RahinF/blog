@@ -9,15 +9,15 @@ interface IComments {
 const Comments = ({ postId }: IComments) => {
   const { data: comments, isSuccess } = useGetAllCommentsQuery(postId);
 
-  const COMMENT_COUNT: number = comments?.length || 0;
+  const commentCount: number = comments?.length || 0;
 
   return (
     <div className="flex flex-col gap-4">
       <NewComment mode="create"/>
 
-      {!!COMMENT_COUNT && 
+      {!!commentCount && 
       <h1 className="text-xl font-medium">
-        {pluralize("Comment", COMMENT_COUNT, true)}
+        {pluralize("Comment", commentCount, true)}
       </h1>
       }
       <div className="divide-y">
