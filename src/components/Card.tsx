@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import IPost from "../types/IPost";
+import Image from "./Image";
 
 interface ICard {
   post: IPost;
@@ -13,24 +14,10 @@ interface ICardContainer {
 }
 
 const Card = ({ post, fullSize }: ICard) => {
-  if (fullSize)
-    return (
-      <Card.Container id={post._id} className="group">
-        <div className="w-full overflow-hidden">
-          <img
-            className="aspect-video object-cover transition group-hover:scale-125"
-            src={`http://localhost:4000/uploads/${post.image}`}
-            alt={post.title}
-          />
-        </div>
+  return fullSize ? <Card.Full post={post} /> : <Card.Default post={post} />;
+};
 
-        <header className="mt-4 flex flex-col gap-2">
-          <Card.Category category={post.category} />
-          <Card.Heading title={post.title} />
-        </header>
-      </Card.Container>
-    );
-
+Card.Default = ({ post }: { post: IPost }) => {
   return (
     <Card.Container
       id={post._id}
@@ -38,6 +25,19 @@ const Card = ({ post, fullSize }: ICard) => {
     >
       <Card.Category category={post.category} />
       <Card.Heading title={post.title} />
+    </Card.Container>
+  );
+};
+
+Card.Full = ({ post }: { post: IPost }) => {
+  return (
+    <Card.Container id={post._id} className="group">
+      <Image src={post.image} alt={post.title} />
+
+      <header className="mt-4 flex flex-col gap-2">
+        <Card.Category category={post.category} />
+        <Card.Heading title={post.title} />
+      </header>
     </Card.Container>
   );
 };

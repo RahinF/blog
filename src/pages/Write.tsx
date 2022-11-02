@@ -240,6 +240,7 @@ const Write = ({ edit }: IWrite) => {
                   alt="preview of user's selected file"
                 />
               </div>
+              
             )}
 
             <div className="flex flex-col">
