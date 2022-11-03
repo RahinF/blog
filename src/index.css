@@ -38,7 +38,7 @@
     @apply border-primary bg-primary text-white hover:bg-red-500;
   }
 
-  .after-bullet {
-    @apply after:mx-2 after:content-['•'];
+  .menu-link {
+    @apply cursor-pointer py-4 text-xl font-medium capitalize transition hover:scale-105;
   }
 }

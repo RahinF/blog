@@ -1,29 +1,16 @@
 import { List } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-
-const links = [
-  {
-    to: "/",
-    text: "home",
-  },
-  {
-    to: "/write",
-    text: "write",
-    requiresAuth: true,
-  },
-
-  {
-    to: "/login",
-    text: "login",
-  },
-];
+import { useAppSelector } from "../app/hooks";
+import { selectCurrentUserId } from "../features/auth/authSlice";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const skipToContentRef = useRef<HTMLDivElement>(null);
   const lastLinkRef = useRef<HTMLAnchorElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const isLoggedIn = useAppSelector(selectCurrentUserId);
 
   const skipToContent = () => {
     if (!skipToContentRef.current) return;
@@ -103,24 +90,23 @@ const Header = () => {
             {isMenuOpen && (
               <div className="fixed left-0 top-32 mt-px h-screen w-full bg-white/90">
                 <ul className="m-auto mt-20 flex h-full max-w-screen-lg flex-col items-center gap-4 px-4 xl:px-0">
-                  {links.map((link, index) => {
-                    const isLastLink = index === links.length - 1;
+                  <li className="menu-link" onClick={closeMenu}>
+                    <Link to="/home">home</Link>
+                  </li>
 
-                    return (
-                      <li
-                        key={link.text}
-                        onClick={closeMenu}
-                        className="py-4 text-xl font-medium capitalize transition hover:scale-105"
-                      >
-                        <Link
-                          to={link.to}
-                          {...(isLastLink && { ref: lastLinkRef })}
-                        >
-                          {link.text}
-                        </Link>
-                      </li>
-                    );
-                  })}
+                  {isLoggedIn ? (
+                    <li className="menu-link" onClick={closeMenu}>
+                      <Link to="/write" ref={lastLinkRef}>
+                        write
+                      </Link>
+                    </li>
+                  ) : (
+                    <li className="menu-link" onClick={closeMenu}>
+                      <Link to="/login" ref={lastLinkRef}>
+                        login
+                      </Link>
+                    </li>
+                  )}
                 </ul>
               </div>
             )}
