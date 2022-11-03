@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { Warning } from "phosphor-react";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useLoginMutation } from "./authApiSlice";
 import IError from "../../types/IError";
 import ILoginForm from "../../types/ILoginForm";
@@ -129,17 +129,10 @@ const Login = () => {
             required.
           </div>
 
-          <button className="btn btn-primary mt-8" disabled={isLoading}>
+          <button className="btn mt-8" disabled={isLoading}>
             {isLoading ? "logging in..." : "login"}
           </button>
         </form>
-
-        <div>
-          Don't have an account?{" "}
-          <Link to="/register" className="font-semibold text-info">
-            Register
-          </Link>
-        </div>
       </div>
     </main>
   );

@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { Warning } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useParams } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { COMMENT_MAX_LENGTH, USERNAME_MAX_LENGTH } from "../../constants/form";
@@ -73,9 +74,10 @@ const NewComment = ({
 
     try {
       await createComment(inputs).unwrap();
+      toast("Comment posted.");
       clearForm();
     } catch (error) {
-      //  comment post failed handle error i.e toast
+      toast("Couldn't post comment.");
     }
   };
 
@@ -90,8 +92,9 @@ const NewComment = ({
     try {
       await updateComment(inputs).unwrap();
       clearForm();
+      toast("Comment updated.");
     } catch (error) {
-      // handle edit comment error
+      toast("Couldn't update comment.");
     }
   };
 
@@ -120,7 +123,7 @@ const NewComment = ({
   }, [currentUser, reset]);
 
   useEffect(() => {
-    if(!currentUser) return;
+    if (!currentUser) return;
     if (mode === "edit") {
       if (!commentToEdit) return;
       setTextCurrentLength(commentToEdit.text.length);
@@ -134,8 +137,8 @@ const NewComment = ({
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
       <div
-        className={clsx("flex flex-col",{
-          "hidden": currentUser,
+        className={clsx("flex flex-col", {
+          hidden: currentUser,
         })}
       >
         <label

@@ -11,6 +11,7 @@ import { timeAgoOrDate } from "../../utils/date";
 import Image from "../../components/Image";
 import PostsLoader from "./PostsLoader";
 import PostSkeleton from "../../components/skeletons/PostSkeleton";
+import toast from "react-hot-toast";
 
 const Post = () => {
   const { id } = useParams();
@@ -27,8 +28,8 @@ const Post = () => {
 
   const handleDelete = async () => {
     if (!post) return;
-    console.log("delete");
     await deletePost(post._id);
+    toast("Post deleted.");
     navigate("/");
   };
 

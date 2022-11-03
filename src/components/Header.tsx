@@ -10,18 +10,12 @@ const links = [
   {
     to: "/write",
     text: "write",
+    requiresAuth: true,
   },
-  {
-    to: "/post/1",
-    text: "post",
-  },
+
   {
     to: "/login",
     text: "login",
-  },
-  {
-    to: "/register",
-    text: "register",
   },
 ];
 

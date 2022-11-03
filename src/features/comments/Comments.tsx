@@ -15,9 +15,11 @@ const Comments = ({ postId }: IComments) => {
     <div className="flex flex-col gap-4">
       <NewComment mode="create" />
 
-      <h1 className="text-xl font-medium">
-        {pluralize("Comment", commentCount, true)}
-      </h1>
+      {!!commentCount && (
+        <h1 className="text-xl font-medium">
+          {pluralize("Comment", commentCount, true)}
+        </h1>
+      )}
 
       <div className="divide-y">
         <CommentsLoader

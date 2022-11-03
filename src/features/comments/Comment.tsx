@@ -19,6 +19,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectCurrentUserId } from "../auth/authSlice";
 import { useDeleteCommentMutation } from "./commentsApiSlice";
 import OutSideClick from "../../hooks/useOutsideClick";
+import toast from "react-hot-toast";
 
 interface Props {
   isParent?: boolean;
@@ -121,8 +122,9 @@ const Comment = ({ comment, isParent, replyTo }: Props) => {
     try {
       await deleteComment(comment._id);
       closeDropdown();
+      toast("Comment deleted.");
     } catch (error) {
-      console.log(error);
+      toast("Couldn't delete comment.");
     }
   };
 

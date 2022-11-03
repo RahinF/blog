@@ -2,6 +2,7 @@ import clsx from "clsx";
 import { Warning } from "phosphor-react";
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { TEXT_MAX_LENGTH, TITLE_MAX_LENGTH } from "../constants/form";
 import {
@@ -84,8 +85,10 @@ const Write = ({ edit }: IWrite) => {
     if (edit) {
       if (!post) return;
       postId = await updatePost({ ...rest, image, postId: post._id }).unwrap();
+      toast("Post updated.");
     } else {
       postId = await createPost({ ...rest, image }).unwrap();
+      toast("Post created.");
     }
     navigate(`/post/${postId}`);
   };
