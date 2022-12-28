@@ -2,13 +2,17 @@ import clsx from "clsx";
 import { Warning } from "phosphor-react";
 import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PASSWORD_REGEX, USERNAME_MAX_LENGTH } from "../constants/form";
+import { useRegisterMutation } from "../features/auth/authApiSlice";
+import IError from "../types/IError";
 import IRegisterForm from "../types/IRegisterForm";
 
 const Register = () => {
+  const [signUp, { isLoading }] = useRegisterMutation();
+  const navigate = useNavigate();
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
-  const [error, setError] = useState<boolean>(true);
+  const [error, setError] = useState<string>("");
   const [usernameCurrentLength, setUsernameCurrentLength] = useState<number>(0);
   const {
     register,
@@ -17,7 +21,18 @@ const Register = () => {
   } = useForm<IRegisterForm>({ mode: "onBlur" });
 
   const onSubmit: SubmitHandler<IRegisterForm> = async (data) => {
-    console.log(data);
+    try {
+      await signUp(data).unwrap();
+      navigate("/");
+    } catch (error) {
+      const errors = error as IError;
+
+      if (errors.status === 400 || errors.status === 401) {
+        setError(errors.data.message);
+      } else {
+        setError("Something went wrong...");
+      }
+    }
   };
 
   return (
@@ -27,7 +42,7 @@ const Register = () => {
 
         {error && (
           <span className="text-error" role="alert">
-            Something went wrong...
+            {error}
           </span>
         )}
 
@@ -171,7 +186,9 @@ const Register = () => {
             required.
           </div>
 
-          <button className="btn btn-primary mt-8">register</button>
+          <button className="btn mt-8" disabled={isLoading}>
+            {isLoading ? "creating account..." : "register"}
+          </button>
         </form>
         <div>
           Have an account?{" "}

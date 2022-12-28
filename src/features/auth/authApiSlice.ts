@@ -1,5 +1,6 @@
 import { apiSlice } from "../../app/api/apiSlice";
 import ILoginForm from "../../types/ILoginForm";
+import IRegisterForm from "../../types/IRegisterForm";
 import IToken from "../../types/IToken";
 import { logout, setCredentials } from "./authSlice";
 
@@ -8,6 +9,23 @@ const authApiSlice = apiSlice.injectEndpoints({
     login: builder.mutation<IToken, ILoginForm>({
       query: (credentials) => ({
         url: "/auth",
+        method: "POST",
+        body: credentials,
+      }),
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          const { accessToken } = data;
+
+          dispatch(setCredentials(accessToken));
+        } catch (error) {
+          console.log(error);
+        }
+      },
+    }),
+    register: builder.mutation<IToken, IRegisterForm>({
+      query: (credentials) => ({
+        url: "/auth/register",
         method: "POST",
         body: credentials,
       }),
@@ -56,5 +74,9 @@ const authApiSlice = apiSlice.injectEndpoints({
   }),
 });
 
-export const { useLoginMutation, useRefreshMutation, useLogoutMutation } =
-  authApiSlice;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useRefreshMutation,
+  useLogoutMutation,
+} = authApiSlice;

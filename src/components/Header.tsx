@@ -2,13 +2,16 @@ import { List } from "phosphor-react";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAppSelector } from "../app/hooks";
+import { useLogoutMutation } from "../features/auth/authApiSlice";
 import { selectCurrentUserId } from "../features/auth/authSlice";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   const skipToContentRef = useRef<HTMLDivElement>(null);
-  const lastLinkRef = useRef<HTMLAnchorElement>(null);
+  const lastLinkRef = useRef(null) as any;
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const [logout] = useLogoutMutation();
 
   const isLoggedIn = useAppSelector(selectCurrentUserId);
 
@@ -57,6 +60,11 @@ const Header = () => {
     buttonRef.current.focus();
   };
 
+  const handleLogout = async () => {
+    await logout();
+    closeMenu();
+  };
+
   return (
     <header className="sticky top-0 z-10 border-b bg-white/75 backdrop-blur-md">
       <div className="flex w-full justify-center bg-black">
@@ -91,21 +99,30 @@ const Header = () => {
               <div className="fixed left-0 top-32 mt-px h-screen w-full bg-white/90">
                 <ul className="m-auto mt-20 flex h-full max-w-screen-lg flex-col items-center gap-4 px-4 xl:px-0">
                   <li className="menu-link" onClick={closeMenu}>
-                    <Link to="/home">home</Link>
+                    <Link to="/">home</Link>
                   </li>
 
                   {isLoggedIn ? (
-                    <li className="menu-link" onClick={closeMenu}>
-                      <Link to="/write" ref={lastLinkRef}>
-                        write
-                      </Link>
-                    </li>
+                    <>
+                      <li className="menu-link" onClick={closeMenu}>
+                        <Link to="/write">write</Link>
+                      </li>
+                      <li className="menu-link" onClick={handleLogout}>
+                        <button ref={lastLinkRef}>Logout</button>
+                      </li>
+                    </>
                   ) : (
-                    <li className="menu-link" onClick={closeMenu}>
-                      <Link to="/login" ref={lastLinkRef}>
-                        login
-                      </Link>
-                    </li>
+                    <>
+                      <li className="menu-link" onClick={closeMenu}>
+                        <Link to="/login">login</Link>
+                      </li>
+
+                      <li className="menu-link" onClick={closeMenu}>
+                        <Link to="/register" ref={lastLinkRef}>
+                          register
+                        </Link>
+                      </li>
+                    </>
                   )}
                 </ul>
               </div>

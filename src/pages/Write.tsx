@@ -255,7 +255,7 @@ const Write = ({ edit }: IWrite) => {
               </label>
               <select
                 id="category"
-                className={clsx({
+                className={clsx("capitalize",{
                   "border-error focus:border-error focus:ring-error":
                     errors.category,
                 })}
@@ -263,8 +263,10 @@ const Write = ({ edit }: IWrite) => {
                 aria-invalid={errors.category ? "true" : "false"}
                 {...register("category", { required: "Category is required." })}
               >
-                <option value="option 1">option 1</option>
-                <option value="option 2">option 2</option>
+                <option value="technology">technology</option>
+                <option value="sports">sports</option>
+                <option value="food">food</option>
+                <option value="nature">nature</option>
               </select>
 
               {errors.category && (

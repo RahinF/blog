@@ -12,6 +12,8 @@ import Image from "../../components/Image";
 import PostsLoader from "./PostsLoader";
 import PostSkeleton from "../../components/skeletons/PostSkeleton";
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { selectCurrentUserId } from "../auth/authSlice";
 
 const Post = () => {
   const { id } = useParams();
@@ -25,6 +27,8 @@ const Post = () => {
 
   const [deletePost] = useDeletePostMutation();
   const navigate = useNavigate();
+
+  const isLoggedIn = useSelector(selectCurrentUserId)
 
   const handleDelete = async () => {
     if (!post) return;
@@ -41,7 +45,7 @@ const Post = () => {
             {post?.category}
           </span>
 
-          <div className="flex items-center gap-4">
+         {isLoggedIn && <div className="flex items-center gap-4">
             <Link to={`/edit/${post?._id}`}>
               <button
                 aria-label="edit post"
@@ -60,7 +64,7 @@ const Post = () => {
               <TrashSimple size={24} />
               <span className="text-sm font-bold uppercase">delete</span>
             </button>
-          </div>
+          </div>}
         </div>
 
         <h1 className="text-3xl font-bold">{post?.title}</h1>
