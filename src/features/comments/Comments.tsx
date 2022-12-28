@@ -5,8 +5,9 @@ import NewComment from "./NewComment";
 
 interface IComments {
   postId: string;
+  postAuthor: string;
 }
-const Comments = ({ postId }: IComments) => {
+const Comments = ({ postId, postAuthor }: IComments) => {
   const { data: comments, isLoading } = useGetAllCommentsQuery(postId);
 
   const commentCount: number = comments?.length || 0;
@@ -23,6 +24,7 @@ const Comments = ({ postId }: IComments) => {
 
       <div className="divide-y">
         <CommentsLoader
+        postAuthor={postAuthor}
           comments={comments}
           isLoading={isLoading}
           placeholderCount={5}

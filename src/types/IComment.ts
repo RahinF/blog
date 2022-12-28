@@ -24,6 +24,7 @@ export interface NewCommentProps {
 export interface INestedComments {
   comment: IComment;
   author: string;
+  postAuthor: string;
 }
 
 export default IComment;

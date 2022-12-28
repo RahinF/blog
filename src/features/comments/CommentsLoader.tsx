@@ -7,19 +7,26 @@ interface ICommentsLoader {
   isLoading: boolean;
   placeholderCount: number;
   isParent?: boolean;
+  postAuthor: string;
 }
 const CommentsLoader = ({
   comments,
   isLoading,
   placeholderCount,
-  isParent
+  isParent,
+  postAuthor,
 }: ICommentsLoader) => {
   if (isLoading) return <CommentSkeleton count={placeholderCount} />;
 
   return (
     <>
       {comments?.map((comment) => (
-        <Comment key={comment._id} comment={comment} isParent={isParent} />
+        <Comment
+          key={comment._id}
+          comment={comment}
+          isParent={isParent}
+          postAuthor={postAuthor}
+        />
       ))}
     </>
   );

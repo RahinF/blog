@@ -85,10 +85,10 @@ const Write = ({ edit }: IWrite) => {
     if (edit) {
       if (!post) return;
       postId = await updatePost({ ...rest, image, postId: post._id }).unwrap();
-      toast("Post updated.");
+      toast.success("Post updated.");
     } else {
       postId = await createPost({ ...rest, image }).unwrap();
-      toast("Post created.");
+      toast.error("Post created.");
     }
     navigate(`/post/${postId}`);
   };

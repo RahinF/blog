@@ -28,12 +28,15 @@ const Post = () => {
   const [deletePost] = useDeletePostMutation();
   const navigate = useNavigate();
 
-  const isLoggedIn = useSelector(selectCurrentUserId)
+
+  const currentUserId = useSelector(selectCurrentUserId);
+
+  const isLoggedIn: boolean = post?.author._id === currentUserId;
 
   const handleDelete = async () => {
     if (!post) return;
     await deletePost(post._id);
-    toast("Post deleted.");
+    toast.success("Post deleted.");
     navigate("/");
   };
 
@@ -45,37 +48,43 @@ const Post = () => {
             {post?.category}
           </span>
 
-         {isLoggedIn && <div className="flex items-center gap-4">
-            <Link to={`/edit/${post?._id}`}>
-              <button
-                aria-label="edit post"
-                className="flex items-center gap-2"
-              >
-                <PencilSimpleLine size={24} />
-                <span className="text-sm font-bold uppercase">edit</span>
-              </button>
-            </Link>
+          {isLoggedIn && (
+            <div className="flex items-center gap-4">
+              <Link to={`/edit/${post?._id}`}>
+                <button
+                  aria-label="edit post"
+                  className="flex items-center gap-2"
+                >
+                  <PencilSimpleLine size={24} />
+                  <span className="text-sm font-bold uppercase">edit</span>
+                </button>
+              </Link>
 
-            <button
-              aria-label="delete post"
-              className="flex items-center gap-2"
-              onClick={handleDelete}
-            >
-              <TrashSimple size={24} />
-              <span className="text-sm font-bold uppercase">delete</span>
-            </button>
-          </div>}
+              <button
+                aria-label="delete post"
+                className="flex items-center gap-2"
+                onClick={handleDelete}
+              >
+                <TrashSimple size={24} />
+                <span className="text-sm font-bold uppercase">delete</span>
+              </button>
+            </div>
+          )}
         </div>
 
         <h1 className="text-3xl font-bold">{post?.title}</h1>
-        {post && <div className="mt-2">{timeAgoOrDate(post.createdAt)}</div>}
+        {post && (
+          <div className="mt-2">
+            {post.author.username} • {timeAgoOrDate(post.createdAt)}
+          </div>
+        )}
       </header>
       {post?.image && <Image src={post?.image} alt={post?.title} />}
       <p className="max-w-prose whitespace-pre-line break-words">
         {post?.text}
       </p>
       <div className="border-t pt-4">
-        {post?._id && <Comments postId={post._id} />}
+        {post?._id && <Comments postId={post._id} postAuthor={post.author._id} />}
       </div>
     </>
   );

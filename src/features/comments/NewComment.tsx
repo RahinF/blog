@@ -74,10 +74,10 @@ const NewComment = ({
 
     try {
       await createComment(inputs).unwrap();
-      toast("Comment posted.");
+      toast.success("Comment posted.");
       clearForm();
     } catch (error) {
-      toast("Couldn't post comment.");
+      toast.error("Couldn't post comment.");
     }
   };
 
@@ -92,9 +92,9 @@ const NewComment = ({
     try {
       await updateComment(inputs).unwrap();
       clearForm();
-      toast("Comment updated.");
+      toast.success("Comment updated.");
     } catch (error) {
-      toast("Couldn't update comment.");
+      toast.error("Couldn't update comment.");
     }
   };
 

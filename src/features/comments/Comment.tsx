@@ -25,25 +25,41 @@ interface Props {
   isParent?: boolean;
   comment: IComment;
   replyTo?: string;
+  postAuthor: string;
 }
 
-const NestedComments = ({ comment, author }: INestedComments) => {
+const NestedComments = ({ comment, author, postAuthor }: INestedComments) => {
   if (!comment.children) return null;
   return (
     <div className="divide-y">
       {comment.children?.map((comment) => (
-        <Comment key={comment._id} comment={comment} replyTo={author} />
+        <Comment
+          key={comment._id}
+          comment={comment}
+          replyTo={author}
+          postAuthor={postAuthor}
+        />
       ))}
     </div>
   );
 };
 
-const Comment = ({ comment, isParent, replyTo }: Props) => {
+const Comment = ({ comment, isParent, replyTo, postAuthor }: Props) => {
   const [showNestedComments, setShowNestedComments] = useState<boolean>(false);
   const [mode, setMode] = useState<Mode>("none");
   const [newCommentProps, setNewCommentProps] = useState<NewCommentProps>();
   const [author, setAuthor] = useState<string>("");
-  const isLoggedIn = useAppSelector(selectCurrentUserId);
+
+  const currentUserId = useAppSelector(selectCurrentUserId);
+
+  const commentOwnerId =
+    typeof comment.author === "object" && comment.author._id;
+
+  const isPostOwner = postAuthor === currentUserId;
+  const isCommentOwner = commentOwnerId === currentUserId;
+
+  const canUseActions = isPostOwner || isCommentOwner;
+
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const [deleteComment] = useDeleteCommentMutation();
@@ -122,20 +138,19 @@ const Comment = ({ comment, isParent, replyTo }: Props) => {
     try {
       await deleteComment(comment._id);
       closeDropdown();
-      toast("Comment deleted.");
+      toast.success("Comment deleted.");
     } catch (error) {
-      toast("Couldn't delete comment.");
+      toast.error("Couldn't delete comment.");
     }
   };
 
   const setModeOnClick = (mode: Mode) => {
     setMode((prev) => (prev === mode ? "none" : mode));
 
-    if(isDropdownOpen){
-      setIsDropdownOpen(false)
+    if (isDropdownOpen) {
+      setIsDropdownOpen(false);
     }
   };
-
 
   return (
     <>
@@ -182,7 +197,7 @@ const Comment = ({ comment, isParent, replyTo }: Props) => {
           </div>
         </div>
 
-        {isLoggedIn && (
+        {canUseActions && (
           <div className="relative self-start" onKeyDown={handleKeyPress}>
             <button
               onClick={toggleDropdown}
@@ -203,8 +218,6 @@ const Comment = ({ comment, isParent, replyTo }: Props) => {
                 onClick={closeDropdown}
                 className="absolute top-16 right-0 border bg-white p-4"
               >
-
-
                 <button
                   ref={firstButtonRef}
                   className="flex items-center gap-2 py-1 text-sm font-bold uppercase transition hover:scale-105 hover:text-primary"
@@ -230,7 +243,11 @@ const Comment = ({ comment, isParent, replyTo }: Props) => {
       {mode !== "none" && <NewComment {...newCommentProps} />}
 
       {showNestedComments && (
-        <NestedComments comment={comment} author={author} />
+        <NestedComments
+          comment={comment}
+          author={author}
+          postAuthor={postAuthor}
+        />
       )}
     </>
   );
