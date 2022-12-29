@@ -12,7 +12,7 @@ import IToken from "../../types/IToken";
 const baseQuery = fetchBaseQuery({
   baseUrl:
     process.env.NODE_ENV === "production"
-      ? "https://blog-api-l239.onrender.com"
+      ? "https://blog-api-l239.onrender.com/api/v1"
       : "http://localhost:4000/api/v1",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
