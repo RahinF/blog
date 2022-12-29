@@ -8,12 +8,11 @@ import {
 import { setCredentials, logout } from "../../features/auth/authSlice";
 import { RootState } from "../store";
 import IToken from "../../types/IToken";
+import { url } from "./config";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl:
-    process.env.NODE_ENV === "production"
-      ? "https://blog-api-l239.onrender.com/api/v1"
-      : "http://localhost:4000/api/v1",
+  baseUrl: `${url}/api/v1`,
+
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;

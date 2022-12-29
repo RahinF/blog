@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+import { url } from "../app/api/config";
 import { TEXT_MAX_LENGTH, TITLE_MAX_LENGTH } from "../constants/form";
 import {
   useCreatePostMutation,
@@ -101,7 +102,7 @@ const Write = ({ edit }: IWrite) => {
      
         setFilePreview(
           post?.image
-            ? `http://localhost:4000/uploads/${post?.image}`
+            ? `${url}/uploads/${post?.image}`
             : undefined
         );
         
