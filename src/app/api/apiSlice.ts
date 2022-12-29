@@ -10,7 +10,10 @@ import { RootState } from "../store";
 import IToken from "../../types/IToken";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: "http://localhost:4000/api/v1",
+  baseUrl:
+    process.env.NODE_ENV === "production"
+      ? "https://blog-api-l239.onrender.com"
+      : "http://localhost:4000/api/v1",
   credentials: "include",
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
