@@ -1,6 +1,5 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { url } from "../app/api/config";
 
 interface Props {
   src: string | undefined;
@@ -25,7 +24,7 @@ const Image = ({ src, alt }: Props) => {
   return (
     <>
       <img
-        src={`${url}/uploads/${src}`}
+        src={src}
         alt={alt}
         onLoad={() => setLoading(false)}
         className={clsx("object-cover aspect-video", {

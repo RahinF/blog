@@ -12,6 +12,7 @@ A blog where users can create blog posts and comment on posts.
 
 ## Technology
 - create react app
+- firebase storage
 - redux
 - tailwind
 - typescript

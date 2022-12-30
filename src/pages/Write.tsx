@@ -4,17 +4,13 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import { url } from "../app/api/config";
 import { TEXT_MAX_LENGTH, TITLE_MAX_LENGTH } from "../constants/form";
 import {
   useCreatePostMutation,
   useGetPostQuery,
   useUpdatePostMutation,
 } from "../features/posts/postsApiSlice";
-import {
-  useDeleteFileMutation,
-  useUploadFileMutation,
-} from "../features/upload/uploadApiSlice";
+import { deleteFile, uploadFile } from "../lib/firebase/uploadFile";
 import IWriteForm from "../types/IWrite";
 
 interface IWrite {
@@ -30,8 +26,6 @@ const Write = ({ edit }: IWrite) => {
 
   const [createPost] = useCreatePostMutation();
   const [updatePost] = useUpdatePostMutation();
-  const [uploadFile] = useUploadFileMutation();
-  const [deleteFile] = useDeleteFileMutation();
 
   const { id } = useParams();
   const { data: post, isSuccess } = useGetPostQuery(id, { skip: !edit });
@@ -52,18 +46,12 @@ const Write = ({ edit }: IWrite) => {
       const { title, text, image, category } = post;
 
       if (image) {
-        setFilePreview(`http://localhost:4000/uploads/${image}`);
+        setFilePreview(image);
       }
 
       reset({ title, text, category });
     }
   }, [edit, isSuccess, post, reset]);
-
-  const handleUploadFile = async (file: File) => {
-    const formdata = new FormData();
-    formdata.append("file", file);
-    return await uploadFile(formdata).unwrap();
-  };
 
   const handleDeleteOldFile = async () => {
     if (!edit || !post?.image) return;
@@ -80,7 +68,7 @@ const Write = ({ edit }: IWrite) => {
 
     if (fileSelected) {
       await handleDeleteOldFile();
-      image = await handleUploadFile(file[0]);
+      image = (await uploadFile(file[0], "images/")) as string;
     }
 
     if (edit) {
@@ -89,7 +77,7 @@ const Write = ({ edit }: IWrite) => {
       toast.success("Post updated.");
     } else {
       postId = await createPost({ ...rest, image }).unwrap();
-      toast.error("Post created.");
+      toast.success("Post created.");
     }
     navigate(`/post/${postId}`);
   };
@@ -98,14 +86,7 @@ const Write = ({ edit }: IWrite) => {
     const files = event.target.files as FileList;
     const file = files[0];
 
-    if (!file)
-     
-        setFilePreview(
-          post?.image
-            ? `${url}/uploads/${post?.image}`
-            : undefined
-        );
-        
+    if (!file) setFilePreview(post?.image ? post.image : undefined);
 
     const fileURL = URL.createObjectURL(file);
     setFilePreview(fileURL);
@@ -244,7 +225,6 @@ const Write = ({ edit }: IWrite) => {
                   alt="preview of user's selected file"
                 />
               </div>
-              
             )}
 
             <div className="flex flex-col">
@@ -256,7 +236,7 @@ const Write = ({ edit }: IWrite) => {
               </label>
               <select
                 id="category"
-                className={clsx("capitalize",{
+                className={clsx("capitalize", {
                   "border-error focus:border-error focus:ring-error":
                     errors.category,
                 })}

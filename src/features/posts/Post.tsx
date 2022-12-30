@@ -14,6 +14,7 @@ import PostSkeleton from "../../components/skeletons/PostSkeleton";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
 import { selectCurrentUserId } from "../auth/authSlice";
+import { deleteFile } from "../../lib/firebase/uploadFile";
 
 const Post = () => {
   const { id } = useParams();
@@ -35,6 +36,7 @@ const Post = () => {
 
   const handleDelete = async () => {
     if (!post) return;
+    await deleteFile(post.image);
     await deletePost(post._id);
     toast.success("Post deleted.");
     navigate("/");
